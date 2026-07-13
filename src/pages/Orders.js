@@ -11,7 +11,7 @@ export default function Orders() {
 
   useEffect(() => {
     fetchOrders();
-  }, []);
+  }, [user?.phone]);
 
   const fetchOrders = async () => {
     try {
