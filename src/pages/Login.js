@@ -8,15 +8,15 @@ export default function Login() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
-    if (e) e.preventDefault();
-    if (phone.length !== 10) {
+  const handleLogin = () => {
+    const cleaned = phone.trim();
+    if (cleaned.length !== 10 || isNaN(cleaned)) {
       setError('Please enter a valid 10 digit phone number');
       return;
     }
-    const user = { phone, isAdmin: phone === ADMIN_PHONE };
+    const user = { phone: cleaned, isAdmin: cleaned === ADMIN_PHONE };
     localStorage.setItem('mdUser', JSON.stringify(user));
-    if (phone === ADMIN_PHONE) {
+    if (cleaned === ADMIN_PHONE) {
       navigate('/admin');
     } else {
       navigate('/home');
@@ -26,19 +26,19 @@ export default function Login() {
   return (
     <div style={styles.container}>
       <div style={styles.card}>
-        <h1 style={styles.title}>🌰 Modern Dryfruit</h1>
+        <div style={styles.logo}>🌰</div>
+        <h1 style={styles.title}>Modern Dryfruit</h1>
         <p style={styles.subtitle}>Wholesale Ordering App</p>
         <input
           style={styles.input}
-          type="tel"
-          placeholder="Enter your phone number"
+          type="number"
+          placeholder="Enter 10 digit phone number"
           value={phone}
           onChange={e => setPhone(e.target.value)}
           maxLength={10}
-          onKeyDown={e => e.key === 'Enter' && handleLogin()}
         />
         {error && <p style={styles.error}>{error}</p>}
-        <button style={styles.button} onClick={() => handleLogin()}>
+        <button style={styles.button} onClick={handleLogin}>
           Login →
         </button>
         <p style={styles.note}>Contact Modern Dryfruit to get access</p>
@@ -65,6 +65,7 @@ const styles = {
     textAlign: 'center',
     boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
   },
+  logo: { fontSize: '50px', marginBottom: '10px' },
   title: { fontSize: '28px', fontWeight: 'bold', color: '#1a1a2e', margin: '0 0 8px 0' },
   subtitle: { color: '#666', marginBottom: '30px', fontSize: '14px' },
   input: {
@@ -76,6 +77,8 @@ const styles = {
     marginBottom: '16px',
     boxSizing: 'border-box',
     outline: 'none',
+    textAlign: 'center',
+    letterSpacing: '2px',
   },
   button: {
     width: '100%',
