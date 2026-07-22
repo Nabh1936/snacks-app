@@ -16,6 +16,7 @@ export default function Login() {
     }
     const user = { phone: cleaned, isAdmin: cleaned === ADMIN_PHONE };
     localStorage.setItem('mdUser', JSON.stringify(user));
+sessionStorage.setItem('mdUser', JSON.stringify(user));
     if (cleaned === ADMIN_PHONE) {
       navigate('/admin');
     } else {

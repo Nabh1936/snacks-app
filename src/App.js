@@ -8,7 +8,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import './App.css';
 
 function App() {
-  const userStr = localStorage.getItem('mdUser');
+  const userStr = localStorage.getItem('mdUser') || sessionStorage.getItem('mdUser');
   let user = null;
   try {
     user = userStr ? JSON.parse(userStr) : null;
