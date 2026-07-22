@@ -17,7 +17,7 @@ export default function Home() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [cart, setCart] = useState(JSON.parse(localStorage.getItem('mdCart')) || []);
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem('mdUser'));
+  const user = JSON.parse(localStorage.getItem('mdUser') || sessionStorage.getItem('mdUser') || 'null');
 
   const filtered = sampleProducts.filter(p => {
     const matchSearch = p.name.toLowerCase().includes(search.toLowerCase());

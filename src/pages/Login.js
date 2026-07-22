@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 const ADMIN_PHONE = '9999999999';
 
 export default function Login() {
   const [phone, setPhone] = useState('');
   const [error, setError] = useState('');
-  const navigate = useNavigate();
 
   const handleLogin = () => {
     const cleaned = phone.trim();
@@ -16,11 +14,11 @@ export default function Login() {
     }
     const user = { phone: cleaned, isAdmin: cleaned === ADMIN_PHONE };
     localStorage.setItem('mdUser', JSON.stringify(user));
-sessionStorage.setItem('mdUser', JSON.stringify(user));
+    sessionStorage.setItem('mdUser', JSON.stringify(user));
     if (cleaned === ADMIN_PHONE) {
-      navigate('/admin');
+      window.location.href = '/admin';
     } else {
-      navigate('/home');
+      window.location.href = '/home';
     }
   };
 
@@ -36,7 +34,6 @@ sessionStorage.setItem('mdUser', JSON.stringify(user));
           placeholder="Enter 10 digit phone number"
           value={phone}
           onChange={e => setPhone(e.target.value)}
-          maxLength={10}
         />
         {error && <p style={styles.error}>{error}</p>}
         <button style={styles.button} onClick={handleLogin}>
