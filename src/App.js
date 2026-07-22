@@ -8,16 +8,22 @@ import AdminDashboard from './pages/AdminDashboard';
 import './App.css';
 
 function App() {
-  const user = JSON.parse(localStorage.getItem('mdUser'));
+  const userStr = localStorage.getItem('mdUser');
+  let user = null;
+  try {
+    user = userStr ? JSON.parse(userStr) : null;
+  } catch(e) {
+    user = null;
+  }
 
   return (
     <Router>
       <Routes>
-        <Route path="/" element={user ? <Navigate to="/home" /> : <Login />} />
+        <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/home" element={user ? <Home /> : <Navigate to="/login" />} />
-        <Route path="/cart" element={user ? <Cart /> : <Navigate to="/login" />} />
-        <Route path="/orders" element={user ? <Orders /> : <Navigate to="/login" />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/orders" element={<Orders />} />
         <Route path="/admin" element={<AdminDashboard />} />
       </Routes>
     </Router>
