@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const ADMIN_PHONE = '9999999999';
+const ADMIN_PHONE = '9820891781';
 
 export default function Login() {
   const [phone, setPhone] = useState('');
@@ -52,7 +52,6 @@ export default function Login() {
 
 const styles = {
   container: {
-    minHeight: '100vh',
     minHeight: '100dvh',
     background: 'linear-gradient(135deg, #6E1F21 0%, #B02D2F 55%, #8A2427 100%)',
     display: 'flex',
