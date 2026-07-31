@@ -1,0 +1,4772 @@
+[
+  {
+    "id": 1,
+    "name": "Almond Flavour Biscotti",
+    "category": "Cookies",
+    "price": 226.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 2,
+    "name": "Almond Butter Sticks",
+    "category": "Cookies",
+    "price": 195.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 3,
+    "name": "Belgian Choco Chips Mini",
+    "category": "Cookies",
+    "price": 182.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 4,
+    "name": "Belgian Mini's (1 Kg)",
+    "category": "Cookies",
+    "price": 950.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 5,
+    "name": "Brownie Crisps",
+    "category": "Cookies",
+    "price": 243.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 6,
+    "name": "Butter Mini Bottle",
+    "category": "Cookies",
+    "price": 145.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 7,
+    "name": "Coffee Cocoa Mini",
+    "category": "Cookies",
+    "price": 175.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 8,
+    "name": "Kesar Nankatai (175 Gm)",
+    "category": "Cookies",
+    "price": 175.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 9,
+    "name": "Kesar Pista Sticks",
+    "category": "Cookies",
+    "price": 300.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 10,
+    "name": "Mini Double Chocolate Coockies (175 Gm)",
+    "category": "Cookies",
+    "price": 200.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 11,
+    "name": "Organic Almond Biscotti",
+    "category": "Cookies",
+    "price": 210.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 12,
+    "name": "Pistachio Cr Biscotti",
+    "category": "Cookies",
+    "price": 264.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 13,
+    "name": "Red Velvet Crisp",
+    "category": "Cookies",
+    "price": 245.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 14,
+    "name": "Saffron Spl Mini",
+    "category": "Cookies",
+    "price": 210.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 15,
+    "name": "Whole Wheat Mini Coockies (175 Gm)",
+    "category": "Cookies",
+    "price": 210.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 16,
+    "name": "Choco Chips Cookies 150 Gm",
+    "category": "Cookies",
+    "price": 100.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 17,
+    "name": "Coconut Cookies 150 Gm",
+    "category": "Cookies",
+    "price": 100.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 18,
+    "name": "Coffee Cookies 150 Gm",
+    "category": "Cookies",
+    "price": 95.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 19,
+    "name": "Dark Chocolate Cookies 150 Gm",
+    "category": "Cookies",
+    "price": 122.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 20,
+    "name": "Multigrain Cookies 150 Gm",
+    "category": "Cookies",
+    "price": 95.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 21,
+    "name": "Oats Cookies 150 Gm",
+    "category": "Cookies",
+    "price": 95.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 22,
+    "name": "Raggi Cookies 150 Gm",
+    "category": "Cookies",
+    "price": 95.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 23,
+    "name": "Choco Almond Cookies (120 Gm)",
+    "category": "Cookies",
+    "price": 140.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 24,
+    "name": "Coconuts Oats Cookies",
+    "category": "Cookies",
+    "price": 140.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 25,
+    "name": "Coffee Oats Coockies",
+    "category": "Cookies",
+    "price": 160.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 26,
+    "name": "Cranberry Oats Cookies",
+    "category": "Cookies",
+    "price": 140.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 27,
+    "name": "Jawar Oats Jaggery Cookies",
+    "category": "Cookies",
+    "price": 140.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 28,
+    "name": "Nachani Oats Cookies",
+    "category": "Cookies",
+    "price": 125.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 29,
+    "name": "Oreo Oats Coockies",
+    "category": "Cookies",
+    "price": 160.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 30,
+    "name": "Peanut Butter Oats Cookies",
+    "category": "Cookies",
+    "price": 140.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 31,
+    "name": "Roasted Almonds Cookies (100 Gm)",
+    "category": "Cookies",
+    "price": 140.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 32,
+    "name": "Wheat Oats Cookies",
+    "category": "Cookies",
+    "price": 125.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 33,
+    "name": "Alsi Chips",
+    "category": "Chips",
+    "price": 210.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 34,
+    "name": "Bajri Chips",
+    "category": "Chips",
+    "price": 230.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 35,
+    "name": "Jawar Chips",
+    "category": "Chips",
+    "price": 230.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 36,
+    "name": "Makai Chivda Diet",
+    "category": "Chips",
+    "price": 200.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 37,
+    "name": "Moong Chips",
+    "category": "Chips",
+    "price": 230.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 38,
+    "name": "Multigrain Chips",
+    "category": "Chips",
+    "price": 210.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 39,
+    "name": "Nachani Chips [masala]",
+    "category": "Chips",
+    "price": 220.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 40,
+    "name": "Nachani Chips [plain]",
+    "category": "Chips",
+    "price": 220.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 41,
+    "name": "Oats Chips",
+    "category": "Chips",
+    "price": 230.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 42,
+    "name": "Pani Puri Chips",
+    "category": "Chips",
+    "price": 230.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 43,
+    "name": "Peri Peri Chips",
+    "category": "Chips",
+    "price": 200.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 44,
+    "name": "Soya Chips [masala]",
+    "category": "Chips",
+    "price": 220.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 45,
+    "name": "Soya Chips [plain]",
+    "category": "Chips",
+    "price": 220.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 46,
+    "name": "Tiranga Chips",
+    "category": "Chips",
+    "price": 270.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 47,
+    "name": "Millet Curry Leaves Chips",
+    "category": "Chips",
+    "price": 330.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 48,
+    "name": "Foxtail Millet Chips",
+    "category": "Chips",
+    "price": 240.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 49,
+    "name": "Nachani Chips",
+    "category": "Chips",
+    "price": 228.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 50,
+    "name": "Soya Chips",
+    "category": "Chips",
+    "price": 238.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 51,
+    "name": "Makai Chips",
+    "category": "Chips",
+    "price": 230.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 52,
+    "name": "Karela Chips",
+    "category": "Chips",
+    "price": 460.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 53,
+    "name": "Beetroot Chips",
+    "category": "Chips",
+    "price": 270.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 54,
+    "name": "Broccoli Bite Chips",
+    "category": "Chips",
+    "price": 340.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 55,
+    "name": "Italian Chips Cheese 100 Gm",
+    "category": "Chips",
+    "price": 35.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 56,
+    "name": "Italian Chips Chilli Tomato 100 Gm",
+    "category": "Chips",
+    "price": 33.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 57,
+    "name": "Italian Chips Cream Onion 100 Gm",
+    "category": "Chips",
+    "price": 32.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 58,
+    "name": "Italian Chips Mari 100 Gm",
+    "category": "Chips",
+    "price": 30.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 59,
+    "name": "Italian Chips Masala 100 Gm",
+    "category": "Chips",
+    "price": 33.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 60,
+    "name": "Italian Chips Salted 100 Gm",
+    "category": "Chips",
+    "price": 33.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 61,
+    "name": "Makai Chips Cheese 100 Gm",
+    "category": "Chips",
+    "price": 34.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 62,
+    "name": "Makai Chips Jelpeno 100 Gm",
+    "category": "Chips",
+    "price": 34.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 63,
+    "name": "Makai Chips Peri Peri 100 Gm",
+    "category": "Chips",
+    "price": 34.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 64,
+    "name": "Masala Jali Wafers",
+    "category": "Chips",
+    "price": 400.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 65,
+    "name": "Sada Jali Wafers",
+    "category": "Chips",
+    "price": 400.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 66,
+    "name": "Soya Crunch Masala",
+    "category": "Crunch",
+    "price": 285.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 67,
+    "name": "Soya Crunch Nachos",
+    "category": "Crunch",
+    "price": 295.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 68,
+    "name": "Soya Crunch Tomato",
+    "category": "Crunch",
+    "price": 285.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 69,
+    "name": "Alsi Puri",
+    "category": "Puri",
+    "price": 210.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 70,
+    "name": "Bingo Jeera Puri",
+    "category": "Puri",
+    "price": 240.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 71,
+    "name": "Dahi Masala Puri",
+    "category": "Puri",
+    "price": 280.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 72,
+    "name": "Dahi Thepla Puri",
+    "category": "Puri",
+    "price": 280.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 73,
+    "name": "Dahi Thepla Puri Loose",
+    "category": "Puri",
+    "price": 250.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 74,
+    "name": "Makai Masala Puri",
+    "category": "Puri",
+    "price": 245.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 75,
+    "name": "Masala Puri",
+    "category": "Puri",
+    "price": 230.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 76,
+    "name": "Maska Chaska Puri",
+    "category": "Puri",
+    "price": 210.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 77,
+    "name": "Namkeen Sakarpada",
+    "category": "Puri",
+    "price": 240.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 78,
+    "name": "Nan Puri",
+    "category": "Puri",
+    "price": 210.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 79,
+    "name": "Rava Jawari Puri",
+    "category": "Puri",
+    "price": 310.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 80,
+    "name": "Tam Tam Puri",
+    "category": "Puri",
+    "price": 280.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 81,
+    "name": "Tea Time Puri",
+    "category": "Puri",
+    "price": 210.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 82,
+    "name": "Wheat Alsi Puri",
+    "category": "Puri",
+    "price": 220.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 83,
+    "name": "Alsi Puri Chilli Flax",
+    "category": "Puri",
+    "price": 330.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 84,
+    "name": "Oats Puri Chilli Flax",
+    "category": "Puri",
+    "price": 380.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 85,
+    "name": "Thepla Puri",
+    "category": "Puri",
+    "price": 185.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 86,
+    "name": "Basket Puri",
+    "category": "Puri",
+    "price": 30.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 87,
+    "name": "Special.sev Puri",
+    "category": "Puri",
+    "price": 210.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 88,
+    "name": "Mathari Puri[goba Puri]",
+    "category": "Puri",
+    "price": 250.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 89,
+    "name": "Roasted Chilli Garlic Stick",
+    "category": "Stick",
+    "price": 38.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 90,
+    "name": "Roasted Jain Pizza Stick",
+    "category": "Stick",
+    "price": 38.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 91,
+    "name": "Roasted Paprika Lavash",
+    "category": "Stick",
+    "price": 38.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 92,
+    "name": "Roasted Pizza Stick",
+    "category": "Stick",
+    "price": 38.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 93,
+    "name": "Roasted Whole Wheat Stick",
+    "category": "Stick",
+    "price": 38.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 94,
+    "name": "Sago Stick",
+    "category": "Stick",
+    "price": 350.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 95,
+    "name": "Manchurian Stick",
+    "category": "Stick",
+    "price": 220.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 96,
+    "name": "Sezwan Stick",
+    "category": "Stick",
+    "price": 220.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 97,
+    "name": "Nachani Stick",
+    "category": "Stick",
+    "price": 243.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 98,
+    "name": "Soya Stick",
+    "category": "Stick",
+    "price": 238.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 99,
+    "name": "Makai Stick",
+    "category": "Stick",
+    "price": 230.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 100,
+    "name": "Golden Stick",
+    "category": "Stick",
+    "price": 300.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 101,
+    "name": "Tomato Chakli",
+    "category": "Stick",
+    "price": 223.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 102,
+    "name": "Patta Wafer",
+    "category": "Patta",
+    "price": 320.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 103,
+    "name": "Patta Wafer Masala",
+    "category": "Patta",
+    "price": 340.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 104,
+    "name": "Bhavnagari",
+    "category": "Besan",
+    "price": 225.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 105,
+    "name": "Boondi",
+    "category": "Besan",
+    "price": 225.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 106,
+    "name": "Boondi Masala",
+    "category": "Besan",
+    "price": 215.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 107,
+    "name": "Makhaniya",
+    "category": "Besan",
+    "price": 225.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 108,
+    "name": "Midiyam Sev",
+    "category": "Besan",
+    "price": 225.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 109,
+    "name": "Mix Farsan",
+    "category": "Besan",
+    "price": 225.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 110,
+    "name": "Nadiyadi Bhusa",
+    "category": "Besan",
+    "price": 235.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 111,
+    "name": "Nylon Sev",
+    "category": "Besan",
+    "price": 225.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 112,
+    "name": "Tikka Ghatiya",
+    "category": "Besan",
+    "price": 225.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 113,
+    "name": "Bhatakani Ghatiya",
+    "category": "Besan",
+    "price": 250.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 114,
+    "name": "Garlic Mix",
+    "category": "Mixer",
+    "price": 225.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 115,
+    "name": "Golden Mix",
+    "category": "Mixer",
+    "price": 230.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 116,
+    "name": "Kolhapuri Mix",
+    "category": "Mixer",
+    "price": 245.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 117,
+    "name": "Navratna Mix",
+    "category": "Mixer",
+    "price": 275.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 118,
+    "name": "Coconut Ladoo",
+    "category": "Ladoo",
+    "price": 155.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 119,
+    "name": "Picnic Ladoo",
+    "category": "Ladoo",
+    "price": 440.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 120,
+    "name": "Till Ladoo",
+    "category": "Ladoo",
+    "price": 440.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 121,
+    "name": "Bhadang Bhel",
+    "category": "Bhel",
+    "price": 250.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 122,
+    "name": "Papad Bhel",
+    "category": "Bhel",
+    "price": 250.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 123,
+    "name": "Diet Bhel",
+    "category": "Bhel",
+    "price": 220.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 124,
+    "name": "Lemon Bhel",
+    "category": "Bhel",
+    "price": 220.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 125,
+    "name": "Bhujia Sev Crazy Millet",
+    "category": "Sev",
+    "price": 280.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 126,
+    "name": "Bhujia Sev Peri Peri",
+    "category": "Sev",
+    "price": 280.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 127,
+    "name": "Bhujiya Sev Pudina",
+    "category": "Sev",
+    "price": 280.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 128,
+    "name": "Cheese Sev",
+    "category": "Sev",
+    "price": 330.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 129,
+    "name": "Tomato Sev",
+    "category": "Sev",
+    "price": 300.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 130,
+    "name": "Garlic Sev",
+    "category": "Sev",
+    "price": 270.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 131,
+    "name": "Tikka Sev",
+    "category": "Sev",
+    "price": 255.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 132,
+    "name": "Nachani Sev",
+    "category": "Sev",
+    "price": 233.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 133,
+    "name": "Ratlam Sev",
+    "category": "Sev",
+    "price": 290.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 134,
+    "name": "Sakarpara [puff]",
+    "category": "Sakarpara",
+    "price": 180.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 135,
+    "name": "Sakarpara [mini]",
+    "category": "Sakarpara",
+    "price": 230.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 136,
+    "name": "Sakarpara [vanilla]",
+    "category": "Sakarpara",
+    "price": 215.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 137,
+    "name": "Sakarpara [gud]",
+    "category": "Sakarpara",
+    "price": 250.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 138,
+    "name": "Bhojan Mixture",
+    "category": "Ground Nut",
+    "price": 240.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 139,
+    "name": "Hing Mixture",
+    "category": "Oil",
+    "price": 250.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 140,
+    "name": "Indori Sev",
+    "category": "Oil",
+    "price": 250.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 141,
+    "name": "Khatta Meetha Mixture",
+    "category": "Oil",
+    "price": 250.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 142,
+    "name": "Lajawab Mixture",
+    "category": "Oil",
+    "price": 250.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 143,
+    "name": "Masala Boondi",
+    "category": "Oil",
+    "price": 250.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 144,
+    "name": "Poha Sev",
+    "category": "Oil",
+    "price": 240.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 145,
+    "name": "Charka Khatta Mix",
+    "category": "Oil",
+    "price": 214.5,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 146,
+    "name": "Chrkha Khatta Mixture",
+    "category": "Oil",
+    "price": 250.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 147,
+    "name": "Dry Fruit Mixture",
+    "category": "Oil",
+    "price": 360.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 148,
+    "name": "Harabhara Farali Mix",
+    "category": "Oil",
+    "price": 267.5,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 149,
+    "name": "Achar Bingo",
+    "category": "Bingo",
+    "price": 240.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 150,
+    "name": "Cheese Bingo",
+    "category": "Bingo",
+    "price": 260.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 151,
+    "name": "Cheese Chilly Bingo",
+    "category": "Bingo",
+    "price": 260.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 152,
+    "name": "Manchurian Bingo",
+    "category": "Bingo",
+    "price": 240.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 153,
+    "name": "Sejwan Bingo",
+    "category": "Bingo",
+    "price": 240.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 154,
+    "name": "Tomato Bingo",
+    "category": "Bingo",
+    "price": 240.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 155,
+    "name": "Kachori Dry",
+    "category": "Kachori",
+    "price": 250.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 156,
+    "name": "Kachori Dry Fruit",
+    "category": "Kachori",
+    "price": 380.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 157,
+    "name": "Kachori Khastha",
+    "category": "Kachori",
+    "price": 260.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 158,
+    "name": "Kachori Mini",
+    "category": "Kachori",
+    "price": 245.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 159,
+    "name": "Roasted Kachori",
+    "category": "Kachori",
+    "price": 310.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 160,
+    "name": "Sweet & Spicy Kachori",
+    "category": "Kachori",
+    "price": 300.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 161,
+    "name": "Cheese Nachos (180)",
+    "category": "Nachos",
+    "price": 68.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 162,
+    "name": "Peri Peri Nachos (180)",
+    "category": "Nachos",
+    "price": 68.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 163,
+    "name": "Salted Nachos (180)",
+    "category": "Nachos",
+    "price": 68.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 164,
+    "name": "Tomato Nachos (180)",
+    "category": "Nachos",
+    "price": 68.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 165,
+    "name": "Choco Vanilla Nibal",
+    "category": "Nibal",
+    "price": 200.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 166,
+    "name": "Chocolate Nibal",
+    "category": "Nibal",
+    "price": 200.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 167,
+    "name": "Mango Nibal",
+    "category": "Nibal",
+    "price": 200.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 168,
+    "name": "Strawburry Nibal",
+    "category": "Nibal",
+    "price": 200.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 169,
+    "name": "Jawar Thai Sweet and Chilli Bite",
+    "category": "Special",
+    "price": 320.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 170,
+    "name": "Jawar Thai Sweet and Chilli Crisp",
+    "category": "Special",
+    "price": 300.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 171,
+    "name": "Veg Corn Crispy",
+    "category": "Special",
+    "price": 330.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 172,
+    "name": "Millet Cheese Tomato Puff",
+    "category": "Special",
+    "price": 290.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 173,
+    "name": "Ragi Peri Peri Bytes",
+    "category": "Special",
+    "price": 280.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 174,
+    "name": "Hara Bhara Crispy",
+    "category": "Special",
+    "price": 340.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 175,
+    "name": "Kanda Bhajia Small",
+    "category": "Special",
+    "price": 195.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 176,
+    "name": "Patti Samosa",
+    "category": "Special",
+    "price": 240.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 177,
+    "name": "Phoolwadi",
+    "category": "Special",
+    "price": 310.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 178,
+    "name": "Chorafari",
+    "category": "Special",
+    "price": 430.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 179,
+    "name": "Chorafari Puri",
+    "category": "Special",
+    "price": 430.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 180,
+    "name": "Papad Churi",
+    "category": "Special",
+    "price": 400.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 181,
+    "name": "Bajri Wada Special",
+    "category": "Special",
+    "price": 300.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 182,
+    "name": "Bajri Wadi",
+    "category": "Special",
+    "price": 310.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 183,
+    "name": "Roasted Farali Bhakarwadi",
+    "category": "Bhakarwadi",
+    "price": 430.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 184,
+    "name": "Roasted Mini Bhakarwadi",
+    "category": "Bhakarwadi",
+    "price": 325.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 185,
+    "name": "Garlic Butter Bhakarwadi",
+    "category": "Bhakarwadi",
+    "price": 230.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 186,
+    "name": "Flax Seed Bhakarwadi",
+    "category": "Bhakarwadi",
+    "price": 300.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 187,
+    "name": "Methi Bhakarwadi",
+    "category": "Bhakarwadi",
+    "price": 290.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 188,
+    "name": "Mini Bhakarwadi",
+    "category": "Bhakarwadi",
+    "price": 290.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 189,
+    "name": "Soya Finger Bhakarwadi (Try)",
+    "category": "Bhakarwadi",
+    "price": 350.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 190,
+    "name": "Button Bhakarwadi",
+    "category": "Bhakarwadi",
+    "price": 240.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 191,
+    "name": "Sandwich Bhakarwadi",
+    "category": "Bhakarwadi",
+    "price": 225.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 192,
+    "name": "Roasted Methi Grill Sandwich",
+    "category": "Bhakarwadi",
+    "price": 325.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 193,
+    "name": "Millet French Fry",
+    "category": "French Fry",
+    "price": 300.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 194,
+    "name": "Cheese French Fry",
+    "category": "French Fry",
+    "price": 320.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 195,
+    "name": "Cream Onion French Fry",
+    "category": "French Fry",
+    "price": 280.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 196,
+    "name": "Peri Peri French Fry",
+    "category": "French Fry",
+    "price": 300.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 197,
+    "name": "Tomato French Fry",
+    "category": "French Fry",
+    "price": 280.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 198,
+    "name": "Jawari Puff Cheddar Cheese",
+    "category": "Jawari",
+    "price": 270.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 199,
+    "name": "Jawar Puff Cheese & Herbs",
+    "category": "Jawari",
+    "price": 270.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 200,
+    "name": "Jawar Puff Cream Onion",
+    "category": "Jawari",
+    "price": 270.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 201,
+    "name": "Jawar Puff Jain",
+    "category": "Jawari",
+    "price": 280.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 202,
+    "name": "Jawar Puff Magic Masala",
+    "category": "Jawari",
+    "price": 270.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 203,
+    "name": "Makhana Chat 500 Gm",
+    "category": "Makhana",
+    "price": 650.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 204,
+    "name": "Makhana Cheese 500 Gm",
+    "category": "Makhana",
+    "price": 650.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 205,
+    "name": "Makhana Cream Onion 500 Gm",
+    "category": "Makhana",
+    "price": 650.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 206,
+    "name": "Makhana Magic Masala Jain 500 Gm",
+    "category": "Makhana",
+    "price": 650.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 207,
+    "name": "Makhana Masala 500 Gm",
+    "category": "Makhana",
+    "price": 650.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 208,
+    "name": "Makhana Miri 500 Gm",
+    "category": "Makhana",
+    "price": 650.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 209,
+    "name": "Makhana Peri Peri 500 Gm",
+    "category": "Makhana",
+    "price": 650.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 210,
+    "name": "Makhana Pizza 500 Gm",
+    "category": "Makhana",
+    "price": 650.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 211,
+    "name": "Makhana Pudina 500 Gm",
+    "category": "Makhana",
+    "price": 650.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 212,
+    "name": "Makhana Salted 500 Gm",
+    "category": "Makhana",
+    "price": 650.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 213,
+    "name": "Quinoa Puff Cheddar Cheese",
+    "category": "Quinoa",
+    "price": 340.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 214,
+    "name": "Quinoa Puff Cheese Jalapeno",
+    "category": "Quinoa",
+    "price": 340.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 215,
+    "name": "Quinoa Puff Dahi Papdi Chat",
+    "category": "Quinoa",
+    "price": 340.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 216,
+    "name": "Quinoa Puff Flamino Hot",
+    "category": "Quinoa",
+    "price": 340.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 217,
+    "name": "Quinoa Puff Magic Masala",
+    "category": "Quinoa",
+    "price": 340.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 218,
+    "name": "Quinoa Puff Pizza Max",
+    "category": "Quinoa",
+    "price": 340.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 219,
+    "name": "Jawar Puff Cheddar Cheese Bottle",
+    "category": "Jawari",
+    "price": 49.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 220,
+    "name": "Jawar Puff Cream Onion Bottle",
+    "category": "Jawari",
+    "price": 49.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 221,
+    "name": "Jawar Puff Magic Masala Bottle",
+    "category": "Jawari",
+    "price": 49.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 222,
+    "name": "Makhana Bbq 70 Gm Bottle",
+    "category": "Makhana",
+    "price": 122.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 223,
+    "name": "Makhana Black Paper 70 Gm Bottle",
+    "category": "Makhana",
+    "price": 122.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 224,
+    "name": "Makhana Cheddar Cheese 70 Gm Bottle",
+    "category": "Makhana",
+    "price": 122.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 225,
+    "name": "Makhana Cream Onion 70 Gm Bottle",
+    "category": "Makhana",
+    "price": 122.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 226,
+    "name": "Makhana Himalay Pink Salt 70 Gm Bottle",
+    "category": "Makhana",
+    "price": 122.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 227,
+    "name": "Makhana Magic Masala 70 Gm Bottle",
+    "category": "Makhana",
+    "price": 122.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 228,
+    "name": "Makhana Peri Peri 70 Gm Bottle",
+    "category": "Makhana",
+    "price": 122.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 229,
+    "name": "Makhana Pudina 70 Gm Bottle",
+    "category": "Makhana",
+    "price": 122.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 230,
+    "name": "Makhana Tangy Tomato 70 Gm Bottle",
+    "category": "Makhana",
+    "price": 122.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 231,
+    "name": "Quinoa Puff Cheddar Cheese Bottle",
+    "category": "Quinoa",
+    "price": 62.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 232,
+    "name": "Quinoa Puff Cheese Jalepino Bottle",
+    "category": "Quinoa",
+    "price": 62.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 233,
+    "name": "Quinoa Puff Dahi Papadi Bottle",
+    "category": "Quinoa",
+    "price": 62.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 234,
+    "name": "Quinoa Puff Flamin Hot Bottle",
+    "category": "Quinoa",
+    "price": 62.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 235,
+    "name": "Quinoa Puff Magic Masala Bottle",
+    "category": "Quinoa",
+    "price": 62.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 236,
+    "name": "Quinoa Puff Pizza Italian Bottle",
+    "category": "Quinoa",
+    "price": 62.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 237,
+    "name": "Silky Cheese Kela wafer",
+    "category": "Kela",
+    "price": 460.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 238,
+    "name": "Silky Mari Kela wafer",
+    "category": "Kela",
+    "price": 340.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 239,
+    "name": "Silky Peri Peri Kela wafer",
+    "category": "Kela",
+    "price": 460.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 240,
+    "name": "Silky Peri Peri Kela Jain wafer",
+    "category": "Kela",
+    "price": 460.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 241,
+    "name": "Silky Yellow Kela wafer",
+    "category": "Kela",
+    "price": 440.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 242,
+    "name": "Kela Mari Gol wafer",
+    "category": "Kela",
+    "price": 290.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 243,
+    "name": "Kela Salli Pani Puri Jain wafer",
+    "category": "Kela",
+    "price": 320.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 244,
+    "name": "Kela Salli Peri Peri Jain wafer",
+    "category": "Kela",
+    "price": 320.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 245,
+    "name": "Kela Wafer Masala[diet]",
+    "category": "Kela",
+    "price": 290.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 246,
+    "name": "Kela Wafer Masala[long]",
+    "category": "Kela",
+    "price": 290.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 247,
+    "name": "Kela Wafer Miri[diet]",
+    "category": "Kela",
+    "price": 290.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 248,
+    "name": "Kela Wafer Miri [long]",
+    "category": "Kela",
+    "price": 290.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 249,
+    "name": "Kela Wafer Yellow[diet]",
+    "category": "Kela",
+    "price": 380.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 250,
+    "name": "Kela Wafer Yellow[long]",
+    "category": "Kela",
+    "price": 360.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 251,
+    "name": "Kela Yellow Gol wafer",
+    "category": "Kela",
+    "price": 360.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 252,
+    "name": "Roasted Banana Chilli Wafer",
+    "category": "Kela",
+    "price": 780.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 253,
+    "name": "Roasted Banana Mari Wafer",
+    "category": "Kela",
+    "price": 780.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 254,
+    "name": "Roasted Banana Yellow Wafer",
+    "category": "Kela",
+    "price": 870.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 255,
+    "name": "Special butter Chakli",
+    "category": "Chakli",
+    "price": 37.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 256,
+    "name": "Special butter Chakli [masala]",
+    "category": "Chakli",
+    "price": 37.0,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 257,
+    "name": "Rice Butter Chakli",
+    "category": "Chakli",
+    "price": 305.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 258,
+    "name": "Bhajni Chakli [gol]",
+    "category": "Chakli",
+    "price": 210.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 259,
+    "name": "Masala Murku Butter",
+    "category": "Chakli",
+    "price": 175.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 260,
+    "name": "Murku Butter",
+    "category": "Chakli",
+    "price": 175.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 261,
+    "name": "Masala Chakli [jalaram]",
+    "category": "Chakli",
+    "price": 250.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 262,
+    "name": "Mini Bhajni Chakli",
+    "category": "Chakli",
+    "price": 230.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 263,
+    "name": "Moong Chakli",
+    "category": "Chakli",
+    "price": 310.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 264,
+    "name": "Cheese Butter Murku",
+    "category": "Chakli",
+    "price": 300.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 265,
+    "name": "Roasted 7GRAIN Mix Salted",
+    "category": "Roasted",
+    "price": 260.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 266,
+    "name": "Roasted Bajra Mix Salted",
+    "category": "Roasted",
+    "price": 240.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 267,
+    "name": "Roasted Black Wheat Flakes",
+    "category": "Roasted",
+    "price": 270.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 268,
+    "name": "Roasted Brown Wheat Flakes Mix",
+    "category": "Roasted",
+    "price": 230.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 269,
+    "name": "Roasted Jawar Flakes Mix",
+    "category": "Roasted",
+    "price": 290.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 270,
+    "name": "Roasted Kolhapuri Mix",
+    "category": "Roasted",
+    "price": 230.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 271,
+    "name": "Roasted Moong Mix Peri Peri",
+    "category": "Roasted",
+    "price": 300.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 272,
+    "name": "Roasted Quinoa Crisp Mix (Jain)",
+    "category": "Roasted",
+    "price": 360.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 273,
+    "name": "Roasted Quinoa Crisps Mix",
+    "category": "Roasted",
+    "price": 370.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 274,
+    "name": "Roasted Ragi Crisps Mix",
+    "category": "Roasted",
+    "price": 290.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 275,
+    "name": "Roasted Makhana Mix",
+    "category": "Roasted",
+    "price": 380.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 276,
+    "name": "Roasted Rangila Mix",
+    "category": "Roasted",
+    "price": 275.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 277,
+    "name": "Roasted Spicy Bajra Mix",
+    "category": "Roasted",
+    "price": 250.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 278,
+    "name": "Foxtail Millet Mix",
+    "category": "Roasted",
+    "price": 260.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 279,
+    "name": "Roasted Millet Mix",
+    "category": "Roasted",
+    "price": 270.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 280,
+    "name": "Roasted Multigrain",
+    "category": "Roasted",
+    "price": 250.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 281,
+    "name": "Roasted Spicy Multigrain",
+    "category": "Roasted",
+    "price": 240.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 282,
+    "name": "Roasted Wheat Salted",
+    "category": "Roasted",
+    "price": 255.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 283,
+    "name": "Diet Chivda [white]",
+    "category": "Roasted",
+    "price": 210.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 284,
+    "name": "Diet Jawari Chivda",
+    "category": "Chivda",
+    "price": 305.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 285,
+    "name": "Farali Chivda Special",
+    "category": "Chivda",
+    "price": 500.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 286,
+    "name": "Halka Fulka Chivda",
+    "category": "Chivda",
+    "price": 250.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 287,
+    "name": "Jain Chivda",
+    "category": "Chivda",
+    "price": 210.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 288,
+    "name": "Kanda Chivda",
+    "category": "Chivda",
+    "price": 210.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 289,
+    "name": "Kothamir Chivda",
+    "category": "Chivda",
+    "price": 265.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 290,
+    "name": "Makai Chivda",
+    "category": "Chivda",
+    "price": 210.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 291,
+    "name": "Nachani Chivda",
+    "category": "Chivda",
+    "price": 233.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 292,
+    "name": "Nylon Chivda",
+    "category": "Chivda",
+    "price": 210.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 293,
+    "name": "Roasted Rosty Tosty Chivda",
+    "category": "Chivda",
+    "price": 255.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 294,
+    "name": "Wheat Puff",
+    "category": "Chivda",
+    "price": 270.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 295,
+    "name": "Wheat Puff Peri Peri",
+    "category": "Chivda",
+    "price": 260.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 296,
+    "name": "Hariyali Diet Mixer",
+    "category": "Chivda",
+    "price": 250.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 297,
+    "name": "Ba Methi Garlic Bhakari",
+    "category": "Bhakari",
+    "price": 65.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 298,
+    "name": "Jeera Bhakari",
+    "category": "Bhakari",
+    "price": 65.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 299,
+    "name": "Masala Bhakari",
+    "category": "Bhakari",
+    "price": 65.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 300,
+    "name": "Methi Bhakari",
+    "category": "Bhakari",
+    "price": 65.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 301,
+    "name": "Nimbu Mirchi Bhakari",
+    "category": "Bhakari",
+    "price": 65.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 302,
+    "name": "Plain Bhakari",
+    "category": "Bhakari",
+    "price": 65.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 303,
+    "name": "Lefafa Achari",
+    "category": "Lefafa",
+    "price": 54.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 304,
+    "name": "Lefafa Cheese Nachos",
+    "category": "Lefafa",
+    "price": 54.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 305,
+    "name": "Lefafa Chilli Cheese",
+    "category": "Lefafa",
+    "price": 54.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 306,
+    "name": "Lefafa Tomato",
+    "category": "Lefafa",
+    "price": 54.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 307,
+    "name": "Diet Mixer Loose",
+    "category": "Moongjor",
+    "price": 310.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 308,
+    "name": "Moongjor Chat",
+    "category": "Moongjor",
+    "price": 300.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 309,
+    "name": "Moongjor Onion",
+    "category": "Moongjor",
+    "price": 300.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 310,
+    "name": "Moongjor Paprika",
+    "category": "Moongjor",
+    "price": 300.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 311,
+    "name": "Moongjor Sejwan",
+    "category": "Moongjor",
+    "price": 300.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 312,
+    "name": "Moongjor Plain",
+    "category": "Moongjor",
+    "price": 250.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 313,
+    "name": "Pakwan Masala",
+    "category": "Pakwan",
+    "price": 440.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 314,
+    "name": "Pakwan Sada",
+    "category": "Pakwan",
+    "price": 430.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 315,
+    "name": "Heeng Jira Chana",
+    "category": "Chana",
+    "price": 410.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 316,
+    "name": "Lemon Pudina Chana",
+    "category": "Peanut",
+    "price": 410.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 317,
+    "name": "Masala Chana New",
+    "category": "Peanut",
+    "price": 410.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 318,
+    "name": "Black Chana",
+    "category": "Peanut",
+    "price": 260.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 319,
+    "name": "Golden Chana",
+    "category": "Peanut",
+    "price": 220.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 320,
+    "name": "Peanut",
+    "category": "Peanut",
+    "price": 250.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 321,
+    "name": "Plain Peanuts",
+    "category": "Peanut",
+    "price": 270.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 322,
+    "name": "Masala Peanuts (Dabeli)",
+    "category": "Peanut",
+    "price": 270.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 323,
+    "name": "Chanadal Special",
+    "category": "Peanut",
+    "price": 320.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 324,
+    "name": "Dry Fruit Makai Chivda",
+    "category": "Peanut",
+    "price": 320.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 325,
+    "name": "Moong Akha",
+    "category": "Peanut",
+    "price": 320.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 326,
+    "name": "Moongdal Special",
+    "category": "Peanut",
+    "price": 320.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 327,
+    "name": "Moong Masala",
+    "category": "Peanut",
+    "price": 320.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 328,
+    "name": "Pancharatan Mix",
+    "category": "Peanut",
+    "price": 320.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 329,
+    "name": "Pista Nutts",
+    "category": "Peanut",
+    "price": 270.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 330,
+    "name": "Vasabi Peanut",
+    "category": "Peanut",
+    "price": 230.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 331,
+    "name": "Chanajor Black",
+    "category": "Peanut",
+    "price": 290.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 332,
+    "name": "Chanajor Puri",
+    "category": "Peanut",
+    "price": 350.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 333,
+    "name": "Chanajor Yellow",
+    "category": "Peanut",
+    "price": 280.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 334,
+    "name": "Mix Chana",
+    "category": "Peanut",
+    "price": 250.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 335,
+    "name": "Mix Peanuts",
+    "category": "Peanut",
+    "price": 310.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 336,
+    "name": "Seeng Bhajiya",
+    "category": "Peanut",
+    "price": 250.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 337,
+    "name": "Mudi Bhel",
+    "category": "Bhel",
+    "price": 15.28,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 338,
+    "name": "Mudi Bhel (Achari)",
+    "category": "Bhel",
+    "price": 15.28,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 339,
+    "name": "Mudi Bhel (Chilli Daniya)",
+    "category": "Bhel",
+    "price": 15.28,
+    "unit": "piece",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 340,
+    "name": "Amul Butter Khari",
+    "category": "Bakery",
+    "price": 66.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 341,
+    "name": "Dry Fruit Cookies",
+    "category": "Bakery",
+    "price": 110.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 342,
+    "name": "Jeera Khari",
+    "category": "Bakery",
+    "price": 60.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 343,
+    "name": "Jowari Toast 200 Gm",
+    "category": "Bakery",
+    "price": 54.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 344,
+    "name": "Maska Khari",
+    "category": "Bakery",
+    "price": 65.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 345,
+    "name": "Methi Khari",
+    "category": "Bakery",
+    "price": 64.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 346,
+    "name": "Milk Toast",
+    "category": "Bakery",
+    "price": 65.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 347,
+    "name": "Multigran Biscuits 250 Gm",
+    "category": "Bakery",
+    "price": 120.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 348,
+    "name": "Pista Badam Biscuits 250 Gm",
+    "category": "Bakery",
+    "price": 110.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 349,
+    "name": "Toast Bajra",
+    "category": "Bakery",
+    "price": 66.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 350,
+    "name": "Toast Garlic 1 Pkt",
+    "category": "Bakery",
+    "price": 85.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 351,
+    "name": "Toast Herbs 1 Pkt",
+    "category": "Bakery",
+    "price": 85.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 352,
+    "name": "Toast Mawa",
+    "category": "Bakery",
+    "price": 52.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 353,
+    "name": "Toast Multigrain 200 Gm",
+    "category": "Bakery",
+    "price": 66.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 354,
+    "name": "Toast Nachani",
+    "category": "Bakery",
+    "price": 65.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 355,
+    "name": "Toast Suji 1 Pkt",
+    "category": "Bakery",
+    "price": 58.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 356,
+    "name": "Toast Whole Wheat 1 Pkt",
+    "category": "Bakery",
+    "price": 50.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 357,
+    "name": "Whole Wheat Khari",
+    "category": "Bakery",
+    "price": 66.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 358,
+    "name": "Mini Khari",
+    "category": "Bakery",
+    "price": 64.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 359,
+    "name": "Stuffed Khari",
+    "category": "Bakery",
+    "price": 80.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 360,
+    "name": "Potato Bbq Biscuit",
+    "category": "Potato",
+    "price": 82.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 361,
+    "name": "Potato Biscuit 100 Gm",
+    "category": "Biscuits",
+    "price": 26.6,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 362,
+    "name": "Potato Cheese Biscuit",
+    "category": "Biscuits",
+    "price": 82.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 363,
+    "name": "Potato Cream Onion Biscuit",
+    "category": "Biscuits",
+    "price": 82.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 364,
+    "name": "Potato Jalepino Biscuit",
+    "category": "Biscuits",
+    "price": 82.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 365,
+    "name": "Potato Mexican",
+    "category": "Biscuits",
+    "price": 82.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 366,
+    "name": "Potato Nachos Biscuit",
+    "category": "Biscuits",
+    "price": 82.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 367,
+    "name": "Potato Peri Peri Biscuit",
+    "category": "Biscuits",
+    "price": 82.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 368,
+    "name": "Potato Sezwan",
+    "category": "Biscuits",
+    "price": 82.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 369,
+    "name": "Potato Spicy Biscuit [100 Gm]",
+    "category": "Biscuits",
+    "price": 30.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 370,
+    "name": "Potato Thai Curry Biscuit",
+    "category": "Biscuits",
+    "price": 82.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 371,
+    "name": "Coin Khakhara Achari",
+    "category": "Khakhara",
+    "price": 72.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 372,
+    "name": "Coin Khakhara Cheese",
+    "category": "Khakhara",
+    "price": 72.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 373,
+    "name": "Coin Khakhara Jeera",
+    "category": "Khakhara",
+    "price": 72.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 374,
+    "name": "Coin Khakhara Masala",
+    "category": "Khakhara",
+    "price": 72.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 375,
+    "name": "Coin Khakhara Mexican",
+    "category": "Khakhara",
+    "price": 72.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 376,
+    "name": "Coin Khakhara Methi",
+    "category": "Khakhara",
+    "price": 72.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 377,
+    "name": "Coin Khakhara Peri Peri Jain",
+    "category": "Khakhara",
+    "price": 72.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 378,
+    "name": "Coin Khakhara Pizza",
+    "category": "Khakhara",
+    "price": 72.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 379,
+    "name": "Coin Khakhara Pizza Jain",
+    "category": "Khakhara",
+    "price": 72.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 380,
+    "name": "Coin Khakhara Sada",
+    "category": "Khakhara",
+    "price": 72.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 381,
+    "name": "Coin Khakhara Chat",
+    "category": "Khakhara",
+    "price": 72.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 382,
+    "name": "Coin Khakhara Maggi",
+    "category": "Khakhara",
+    "price": 72.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 383,
+    "name": "Coin Khakhara Peri Peri",
+    "category": "Khakhara",
+    "price": 72.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 384,
+    "name": "Thepla Khakhara (250 Gm)",
+    "category": "Khakhara",
+    "price": 130.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 385,
+    "name": "Pancham Farali",
+    "category": "Fast",
+    "price": 295.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 386,
+    "name": "Sago Farali",
+    "category": "Fast",
+    "price": 260.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 387,
+    "name": "Sabudana Puri",
+    "category": "Fast",
+    "price": 330.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 388,
+    "name": "Masala Kurkure",
+    "category": "Fast",
+    "price": 260.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 389,
+    "name": "Cheese Kurkure",
+    "category": "Fast",
+    "price": 265.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 390,
+    "name": "Cheese Ball",
+    "category": "Fast",
+    "price": 250.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 391,
+    "name": "Cheese Ring",
+    "category": "Fast",
+    "price": 250.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 392,
+    "name": "Dry Fruit Gold Remix",
+    "category": "Fast",
+    "price": 1050.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 393,
+    "name": "Dry Fruit Hot Mix",
+    "category": "Fast",
+    "price": 940.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 394,
+    "name": "Dry Fruit Remix",
+    "category": "Fast",
+    "price": 940.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 395,
+    "name": "Papdi[masala]",
+    "category": "Fast",
+    "price": 250.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 396,
+    "name": "Papdi[sada]",
+    "category": "Fast",
+    "price": 250.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 397,
+    "name": "Acidity Free Mukhwas",
+    "category": "Mukhwas",
+    "price": 590.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 398,
+    "name": "Almond Mukhwas",
+    "category": "Mukhwas",
+    "price": 1020.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 399,
+    "name": "Crunchy Mukhwas",
+    "category": "Mukhwas",
+    "price": 580.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 400,
+    "name": "Seven Seed Mukhwas",
+    "category": "Mukhwas",
+    "price": 740.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 401,
+    "name": "Cow Ghee Jeera (Extra Thin)",
+    "category": "Khakhara",
+    "price": 400.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 402,
+    "name": "Cow Ghee Jeera Khakhara",
+    "category": "Khakhara",
+    "price": 370.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 403,
+    "name": "Cow Ghee Masala (Extra Thin)",
+    "category": "Khakhara",
+    "price": 400.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 404,
+    "name": "Cow Ghee Methi (Extra Thin)",
+    "category": "Khakhara",
+    "price": 400.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 405,
+    "name": "Cow Ghee Methi Khakhara",
+    "category": "Khakhara",
+    "price": 370.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 406,
+    "name": "Cow Ghee Sada (Extra Thin)",
+    "category": "Khakhara",
+    "price": 400.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 407,
+    "name": "Cow Ghee Sada Khakhara",
+    "category": "Khakhara",
+    "price": 370.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 408,
+    "name": "Khakhara Bajri Methi",
+    "category": "Khakhara",
+    "price": 260.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 409,
+    "name": "Khakhara Chorafalli",
+    "category": "Khakhara",
+    "price": 398.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 410,
+    "name": "Khakhara Garlic",
+    "category": "Khakhara",
+    "price": 280.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 411,
+    "name": "Khakhara Manglori",
+    "category": "Khakhara",
+    "price": 255.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 412,
+    "name": "Khakhara Methi Malai",
+    "category": "Khakhara",
+    "price": 255.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 413,
+    "name": "Khakhara Nachani",
+    "category": "Khakhara",
+    "price": 300.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 414,
+    "name": "Khakhara Nylon Jeera",
+    "category": "Khakhara",
+    "price": 255.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 415,
+    "name": "Khakhara Peper Masala",
+    "category": "Khakhara",
+    "price": 285.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 416,
+    "name": "Khakhara Punjabi",
+    "category": "Khakhara",
+    "price": 255.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 417,
+    "name": "Khakhara Roomali Sada",
+    "category": "Khakhara",
+    "price": 255.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 418,
+    "name": "Mini Bajari Methi",
+    "category": "Mini",
+    "price": 290.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 419,
+    "name": "Mini Diet Masala",
+    "category": "Mini",
+    "price": 297.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 420,
+    "name": "Mini Diet Methi",
+    "category": "Mini",
+    "price": 297.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 421,
+    "name": "Mini Garlic",
+    "category": "Mini",
+    "price": 290.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 422,
+    "name": "Mini Ghee Jeera",
+    "category": "Mini",
+    "price": 270.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 423,
+    "name": "Mini Ghee Sada",
+    "category": "Mini",
+    "price": 270.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 424,
+    "name": "Mini Jiralu",
+    "category": "Mini",
+    "price": 262.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 425,
+    "name": "Mini Mangroli",
+    "category": "Mini",
+    "price": 270.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 426,
+    "name": "Mini Masala",
+    "category": "Mini",
+    "price": 270.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 427,
+    "name": "Mini Methi",
+    "category": "Mini",
+    "price": 270.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 428,
+    "name": "Mini Methi Masala",
+    "category": "Mini",
+    "price": 290.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 429,
+    "name": "Mini Nachani Khakhra",
+    "category": "Mini",
+    "price": 325.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 430,
+    "name": "Mini Panipuri",
+    "category": "Mini",
+    "price": 325.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 431,
+    "name": "Mini Pavbhaji",
+    "category": "Mini",
+    "price": 325.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 432,
+    "name": "Mini Punjabi",
+    "category": "Mini",
+    "price": 270.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 433,
+    "name": "Mini Sezwan",
+    "category": "Mini",
+    "price": 290.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 434,
+    "name": "Mobile Bajari Methi",
+    "category": "Mobile",
+    "price": 276.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 435,
+    "name": "Mobile Chat",
+    "category": "Mobile",
+    "price": 287.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 436,
+    "name": "Mobile Garlic",
+    "category": "Mobile",
+    "price": 290.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 437,
+    "name": "Mobile Ghee Jeera",
+    "category": "Mobile",
+    "price": 276.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 438,
+    "name": "Mobile Ghee Sada",
+    "category": "Mobile",
+    "price": 276.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 439,
+    "name": "Mobile Jiralu",
+    "category": "Mobile",
+    "price": 287.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 440,
+    "name": "Mobile Manchurian",
+    "category": "Mobile",
+    "price": 290.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 441,
+    "name": "Mobile Manglori",
+    "category": "Mobile",
+    "price": 290.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 442,
+    "name": "Mobile Masala",
+    "category": "Mobile",
+    "price": 276.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 443,
+    "name": "Mobile Methi",
+    "category": "Mobile",
+    "price": 276.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 444,
+    "name": "Mobile Methi Garlic",
+    "category": "Mobile",
+    "price": 225.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 445,
+    "name": "Mobile Methi Masala",
+    "category": "Mobile",
+    "price": 276.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 446,
+    "name": "Mobile Panipuri",
+    "category": "Mobile",
+    "price": 290.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 447,
+    "name": "Mobile Pavbhaji",
+    "category": "Mobile",
+    "price": 290.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 448,
+    "name": "Mobile Peri Peri",
+    "category": "Mobile",
+    "price": 267.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 449,
+    "name": "Mobile Pizza",
+    "category": "Mobile",
+    "price": 262.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 450,
+    "name": "Mobile Punjabi",
+    "category": "Mobile",
+    "price": 276.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 451,
+    "name": "Mobile Sezwan",
+    "category": "Mobile",
+    "price": 262.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 452,
+    "name": "Farali Khakhara",
+    "category": "Roomali",
+    "price": 350.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 453,
+    "name": "Roomali Bajari Methi (400 Gm)",
+    "category": "Roomali",
+    "price": 157.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 454,
+    "name": "Roomali Dahi Kothmir Khakhara (400 Gm)",
+    "category": "Roomali",
+    "price": 168.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 455,
+    "name": "Roomali Dahi Methi Khakhara (400 Gm)",
+    "category": "Roomali",
+    "price": 168.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 456,
+    "name": "Roomali Farali Khakhara (400 Gm)",
+    "category": "Roomali",
+    "price": 199.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 457,
+    "name": "Roomali Ghee Jeera (400 Gm)",
+    "category": "Roomali",
+    "price": 157.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 458,
+    "name": "Roomali Ghee Sada (400 Gm)",
+    "category": "Roomali",
+    "price": 157.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 459,
+    "name": "Roomali Jawari Masala Khakhara (400 Gm)",
+    "category": "Roomali",
+    "price": 168.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 460,
+    "name": "Roomali Kachori Khakhara (400 Gm)",
+    "category": "Roomali",
+    "price": 178.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 461,
+    "name": "Roomali Mangroli Khakhara (400 Gm)",
+    "category": "Roomali",
+    "price": 168.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 462,
+    "name": "Roomali Masala(400 Gm)",
+    "category": "Roomali",
+    "price": 157.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 463,
+    "name": "Roomali Methi Garlic Khakhara (400 Gm)",
+    "category": "Roomali",
+    "price": 168.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 464,
+    "name": "Roomali Methi Khakhara (400 Gm)",
+    "category": "Roomali",
+    "price": 157.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 465,
+    "name": "Roomali Nachani Khakhara (400 Gm)",
+    "category": "Roomali",
+    "price": 168.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 466,
+    "name": "Roomali Pavbhaji Khakhara (400 Gm)",
+    "category": "Roomali",
+    "price": 168.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 467,
+    "name": "Roomali Punjabi (400)",
+    "category": "Roomali",
+    "price": 157.0,
+    "unit": "1 PKT",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 468,
+    "name": "Roomali Bajra Methi Khakhara Loose",
+    "category": "Roomali",
+    "price": 273.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 469,
+    "name": "Roomali Chorafali Khakhara Loose",
+    "category": "Roomali",
+    "price": 360.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 470,
+    "name": "Roomali Dahi Kothmir Khakhara Loose",
+    "category": "Roomali",
+    "price": 280.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 471,
+    "name": "Roomali Dahi Methi Khakhara Loose",
+    "category": "Roomali",
+    "price": 294.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 472,
+    "name": "Roomali Farali Khakhara Loose",
+    "category": "Roomali",
+    "price": 380.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 473,
+    "name": "Roomali Ghee Jeera Loose",
+    "category": "Roomali",
+    "price": 273.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 474,
+    "name": "Roomali Ghee Sada Loose",
+    "category": "Roomali",
+    "price": 273.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 475,
+    "name": "Roomali Jawari Masala Loose",
+    "category": "Roomali",
+    "price": 294.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 476,
+    "name": "Roomali Jiralu Khakhara Loose",
+    "category": "Roomali",
+    "price": 280.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 477,
+    "name": "Roomali Manglori Khakahara Loose",
+    "category": "Roomali",
+    "price": 283.5,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 478,
+    "name": "Roomali Masala Khakhara Loose",
+    "category": "Roomali",
+    "price": 273.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 479,
+    "name": "Roomali Methi Garlic Khakhara Loose",
+    "category": "Roomali",
+    "price": 294.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 480,
+    "name": "Roomali Methi Khakhara Loose",
+    "category": "Roomali",
+    "price": 273.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 481,
+    "name": "Roomali Mogari Khakhara Loose",
+    "category": "Roomali",
+    "price": 310.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 482,
+    "name": "Roomali Nachani Khakhara Loose",
+    "category": "Roomali",
+    "price": 294.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 483,
+    "name": "Roomali Punjabi Masala Loose",
+    "category": "Roomali",
+    "price": 273.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 484,
+    "name": "Roomali Sambhar Masala Loose",
+    "category": "Roomali",
+    "price": 280.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 485,
+    "name": "Mini Butter Chakli",
+    "category": "Mini",
+    "price": 460.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 486,
+    "name": "Mini Butter Chakli [masala]",
+    "category": "Mini",
+    "price": 460.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 487,
+    "name": "Mini Butter Chakli [nachni]",
+    "category": "Mini",
+    "price": 460.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 488,
+    "name": "Mini Butter Chakli [peri Peri]",
+    "category": "Mini",
+    "price": 320.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 489,
+    "name": "Mini Butter Chakli [sezwan]",
+    "category": "Mini",
+    "price": 320.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 490,
+    "name": "Mini Butter Chakli [tomato]",
+    "category": "Mini",
+    "price": 320.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 491,
+    "name": "Malai Chikki",
+    "category": "Chikki",
+    "price": 420.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 492,
+    "name": "Malai Chikki (250 Gm)",
+    "category": "Chikki",
+    "price": 125.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 493,
+    "name": "Malai Chikki (Mawa 250 Gm)",
+    "category": "Chikki",
+    "price": 80.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 494,
+    "name": "Malai Chikki [500 Gm]",
+    "category": "Chikki",
+    "price": 235.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 495,
+    "name": "3IN1 Chikki",
+    "category": "Chikki",
+    "price": 64.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 496,
+    "name": "Coconut Chikki",
+    "category": "Chikki",
+    "price": 75.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 497,
+    "name": "Crush Chikki",
+    "category": "Chikki",
+    "price": 64.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 498,
+    "name": "Mix Chikki",
+    "category": "Chikki",
+    "price": 64.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 499,
+    "name": "Peanut Chikki",
+    "category": "Chikki",
+    "price": 64.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 500,
+    "name": "Peanut Chikki Loose 1 Kg",
+    "category": "Chikki",
+    "price": 320.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 501,
+    "name": "Rajgheera Chikki",
+    "category": "Chikki",
+    "price": 64.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 502,
+    "name": "Rajpeanut Chikki",
+    "category": "Chikki",
+    "price": 64.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 503,
+    "name": "Sugarfree Dry Fruits Chikki 1.5 Kg",
+    "category": "Chikki",
+    "price": 2050.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 504,
+    "name": "Till Chikki",
+    "category": "Chikki",
+    "price": 64.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 505,
+    "name": "Bhel Cup",
+    "category": "Lucrative",
+    "price": 45.38,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 506,
+    "name": "Bhel Cup Jain",
+    "category": "Lucrative",
+    "price": 45.38,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 507,
+    "name": "Bhel Puri Kit",
+    "category": "Lucrative",
+    "price": 122.19,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 508,
+    "name": "Pani Puri Kit",
+    "category": "Lucrative",
+    "price": 157.1,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 509,
+    "name": "Sev Puri Kit",
+    "category": "Lucrative",
+    "price": 122.19,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 510,
+    "name": "Special Ghee Jira Khakhara",
+    "category": "Khakhara",
+    "price": 270.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 511,
+    "name": "Special Ghee Sada Khakhara",
+    "category": "Khakhara",
+    "price": 270.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 512,
+    "name": "Special Jiralu Khakhara",
+    "category": "Khakhara",
+    "price": 300.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 513,
+    "name": "Special Masala Khakhara",
+    "category": "Khakhara",
+    "price": 270.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 514,
+    "name": "Special Methi Khakhara",
+    "category": "Khakhara",
+    "price": 270.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 515,
+    "name": "Special Methi Masala Kha",
+    "category": "Khakhara",
+    "price": 225.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 516,
+    "name": "Bhindi Fry Pkt",
+    "category": "Chana",
+    "price": 130.0,
+    "unit": "1 PKT",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 517,
+    "name": "Mari Chana Kabuli",
+    "category": "Chana",
+    "price": 410.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 518,
+    "name": "Masala Chana Kabuli",
+    "category": "Chana",
+    "price": 410.0,
+    "unit": "kg",
+    "gst": 5,
+    "stock": true
+  },
+  {
+    "id": 519,
+    "name": "Flavour Butter Pavbhaji Khakhra",
+    "category": "Khakhara",
+    "price": 272.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 520,
+    "name": "Flavour Cheese Chilli Khakhra",
+    "category": "Khakhara",
+    "price": 335.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 521,
+    "name": "Flavour Cheese Garlic Khakhra",
+    "category": "Khakhara",
+    "price": 335.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 522,
+    "name": "Flavour Chora Cheese Khakhra",
+    "category": "Khakhara",
+    "price": 304.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 523,
+    "name": "Flavour Chorafari Khakhara",
+    "category": "Khakhara",
+    "price": 314.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 524,
+    "name": "Flavour Farali Khakhara",
+    "category": "Khakhara",
+    "price": 280.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 525,
+    "name": "Flavour Kanda Bhajia Khakhra",
+    "category": "Khakhara",
+    "price": 262.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 526,
+    "name": "Flavour Maggi Masala Khakhra",
+    "category": "Khakhara",
+    "price": 252.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 527,
+    "name": "Flavour Misal Pav Khakhra",
+    "category": "Khakhara",
+    "price": 252.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 528,
+    "name": "Flavour Palak Paneer Khakhra",
+    "category": "Khakhara",
+    "price": 272.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 529,
+    "name": "Flavour Vadapav Khakhra",
+    "category": "Khakhara",
+    "price": 250.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  },
+  {
+    "id": 530,
+    "name": "Methi Sambariya Khakhara",
+    "category": "Khakhara",
+    "price": 280.0,
+    "unit": "kg",
+    "gst": 0,
+    "stock": true
+  }
+]

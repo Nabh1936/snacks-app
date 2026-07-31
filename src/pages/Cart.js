@@ -15,17 +15,20 @@ export default function Cart() {
     localStorage.setItem('mdCart', JSON.stringify(newCart));
   };
 
-  const total = cart.reduce((sum, c) => sum + c.price * c.qty, 0);
-  const gst = Math.round(total * 0.18);
-  const grandTotal = total + gst;
+  const subtotal = cart.reduce((sum, c) => sum + c.price * c.qty, 0);
+  const totalGst = cart.reduce((sum, c) => {
+    const gstRate = c.gst || 0;
+    return sum + Math.round(c.price * c.qty * gstRate / 100);
+  }, 0);
+  const grandTotal = subtotal + totalGst;
 
   const placeOrder = async () => {
     if (cart.length === 0) return;
     const order = {
       phone: user?.phone,
       items: cart,
-      total,
-      gst,
+      subtotal,
+      gst: totalGst,
       grandTotal,
       status: 'Pending',
       date: new Date().toLocaleString(),
@@ -64,6 +67,7 @@ export default function Cart() {
                 <div style={styles.itemInfo}>
                   <p style={styles.itemName}>{item.name}</p>
                   <p style={styles.itemPrice}>₹{item.price}/{item.unit}</p>
+                  {item.gst === 0 && <span style={styles.gstFree}>GST Free</span>}
                 </div>
                 <div style={styles.qtyControl}>
                   <button style={styles.qtyBtn} onClick={() => updateQty(item.id, -1)}>−</button>
@@ -79,11 +83,11 @@ export default function Cart() {
             <h3 style={styles.billTitle}>Bill Summary</h3>
             <div style={styles.billRow}>
               <span>Subtotal</span>
-              <span>₹{total}</span>
+              <span>₹{subtotal}</span>
             </div>
             <div style={styles.billRow}>
-              <span>GST (18%)</span>
-              <span>₹{gst}</span>
+              <span>GST (5% on applicable items)</span>
+              <span>₹{totalGst}</span>
             </div>
             <div style={styles.divider} />
             <div style={{ ...styles.billRow, fontWeight: 'bold', fontSize: '18px' }}>
@@ -122,6 +126,7 @@ const styles = {
   itemInfo: { flex: 1 },
   itemName: { margin: '0 0 4px', fontWeight: 'bold', fontSize: '14px' },
   itemPrice: { margin: 0, color: '#999', fontSize: '12px' },
+  gstFree: { fontSize: '10px', color: '#2e7d32', background: '#e8f5e9', padding: '2px 6px', borderRadius: '8px' },
   qtyControl: { display: 'flex', alignItems: 'center', gap: '12px' },
   qtyBtn: { width: '30px', height: '30px', borderRadius: '50%', border: 'none', background: '#667eea', color: 'white', fontSize: '18px', cursor: 'pointer' },
   qty: { fontWeight: 'bold', fontSize: '16px', minWidth: '20px', textAlign: 'center' },
