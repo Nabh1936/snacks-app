@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
 export default function AdminDashboard() {
@@ -12,6 +12,8 @@ export default function AdminDashboard() {
   const [searchPhone, setSearchPhone] = useState('');
   const [dateFilter, setDateFilter] = useState('all'); // all | today | week
   const [stockSearch, setStockSearch] = useState('');
+  const [confirmClear, setConfirmClear] = useState(false);
+  const [clearing, setClearing] = useState(false);
 
   useEffect(() => {
     fetchAll();
@@ -54,6 +56,23 @@ export default function AdminDashboard() {
       ));
     } catch (error) {
       console.error('Error updating stock:', error);
+    }
+  };
+
+  const clearAllOrders = async () => {
+    setClearing(true);
+    try {
+      const snap = await getDocs(collection(db, 'orders'));
+      for (const d of snap.docs) {
+        await deleteDoc(doc(db, 'orders', d.id));
+      }
+      localStorage.removeItem('mdOrders');
+      setOrders([]);
+    } catch (error) {
+      console.error('Error clearing orders:', error);
+    } finally {
+      setClearing(false);
+      setConfirmClear(false);
     }
   };
 
@@ -142,6 +161,29 @@ export default function AdminDashboard() {
 
       {tab === 'orders' && (
         <div style={styles.section}>
+          {orders.length > 0 && (
+            <div style={styles.clearBox}>
+              {!confirmClear ? (
+                <button style={styles.clearBtn} onClick={() => setConfirmClear(true)}>
+                  🗑️ Clear All Orders
+                </button>
+              ) : (
+                <div style={styles.confirmBox}>
+                  <p style={styles.confirmText}>
+                    This will permanently delete all {orders.length} orders. This cannot be undone.
+                  </p>
+                  <div style={styles.confirmActions}>
+                    <button style={styles.cancelBtn} onClick={() => setConfirmClear(false)} disabled={clearing}>
+                      Cancel
+                    </button>
+                    <button style={styles.confirmDeleteBtn} onClick={clearAllOrders} disabled={clearing}>
+                      {clearing ? 'Deleting...' : 'Yes, Delete All'}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
           <div style={styles.filterRow}>
             <input
               style={styles.searchInput}
@@ -171,7 +213,10 @@ export default function AdminDashboard() {
             filteredOrders.map(order => (
               <div key={order.id} style={styles.orderCard}>
                 <div style={styles.orderHeader}>
-                  <span style={styles.orderId}>📱 {order.phone}</span>
+                  <div>
+                  {order.name && <span style={styles.orderName}>{order.name}</span>}
+                  <span style={order.name ? styles.orderPhoneSub : styles.orderId}>📱 {order.phone}</span>
+                </div>
                   <span style={{
                     ...styles.orderStatus,
                     background: order.status === 'Dispatched' ? '#e8f5e9' : '#FFF6D9',
@@ -259,6 +304,13 @@ const styles = {
   tabBtnActive: { background: '#B02D2F', color: 'white', border: '1px solid #B02D2F' },
   section: { padding: '0 16px 40px' },
   filterRow: { marginBottom: '8px' },
+  clearBox: { marginBottom: '14px' },
+  clearBtn: { width: '100%', padding: '10px', background: 'white', border: '1px solid #B02D2F', color: '#B02D2F', borderRadius: '10px', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer' },
+  confirmBox: { background: '#FDEAEA', border: '1px solid #B02D2F', borderRadius: '10px', padding: '14px' },
+  confirmText: { color: '#6E1F21', fontSize: '13px', margin: '0 0 12px' },
+  confirmActions: { display: 'flex', gap: '10px' },
+  cancelBtn: { flex: 1, padding: '10px', background: 'white', border: '1px solid #ccc', borderRadius: '8px', fontSize: '13px', cursor: 'pointer' },
+  confirmDeleteBtn: { flex: 1, padding: '10px', background: '#B02D2F', color: 'white', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer' },
   searchInput: {
     width: '100%',
     padding: '12px 14px',
@@ -277,6 +329,8 @@ const styles = {
   orderCard: { background: 'white', borderRadius: '12px', padding: '16px', marginBottom: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' },
   orderHeader: { display: 'flex', justifyContent: 'space-between', marginBottom: '8px' },
   orderId: { fontWeight: 'bold', fontSize: '14px' },
+  orderName: { display: 'block', fontWeight: 'bold', fontSize: '14px', color: '#1a1a1a' },
+  orderPhoneSub: { display: 'block', fontSize: '12px', color: '#999' },
   orderStatus: { padding: '4px 10px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold' },
   orderDate: { color: '#999', fontSize: '12px', marginBottom: '12px' },
   orderItem: { display: 'flex', justifyContent: 'space-between', fontSize: '14px', marginBottom: '6px' },

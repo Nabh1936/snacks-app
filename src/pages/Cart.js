@@ -25,6 +25,7 @@ export default function Cart() {
   const placeOrder = async () => {
     if (cart.length === 0) return;
     const order = {
+      name: user?.name || '',
       phone: user?.phone,
       items: cart,
       subtotal,

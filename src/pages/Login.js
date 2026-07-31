@@ -3,22 +3,30 @@ import React, { useState } from 'react';
 const ADMIN_PHONE = '9820891781';
 
 export default function Login() {
+  const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [error, setError] = useState('');
 
   const handleLogin = () => {
-    const cleaned = phone.trim();
-    if (cleaned.length !== 10 || isNaN(cleaned)) {
+    const cleanedPhone = phone.trim();
+    const cleanedName = name.trim();
+
+    if (cleanedName.length < 2) {
+      setError('Please enter your name or shop name');
+      return;
+    }
+    if (cleanedPhone.length !== 10 || isNaN(cleanedPhone)) {
       setError('Please enter a valid 10 digit phone number');
       return;
     }
-    const user = { phone: cleaned, isAdmin: cleaned === ADMIN_PHONE };
+
+    const user = { name: cleanedName, phone: cleanedPhone, isAdmin: cleanedPhone === ADMIN_PHONE };
     try {
       localStorage.setItem('mdUser', JSON.stringify(user));
     } catch (e) {
       console.log('localStorage error', e);
     }
-    if (cleaned === ADMIN_PHONE) {
+    if (cleanedPhone === ADMIN_PHONE) {
       window.location.replace('/admin');
     } else {
       window.location.replace('/home');
@@ -30,6 +38,13 @@ export default function Login() {
       <div style={styles.card}>
         <img src="/logo-header.png" alt="MDF HealthPlus" style={styles.logo} />
         <p style={styles.subtitle}>Wholesale Ordering App</p>
+        <input
+          style={styles.input}
+          type="text"
+          placeholder="Your name or shop name"
+          value={name}
+          onChange={e => setName(e.target.value)}
+        />
         <input
           style={styles.input}
           type="tel"
@@ -73,14 +88,13 @@ const styles = {
   input: {
     width: '100%',
     padding: '14px',
-    fontSize: '18px',
+    fontSize: '16px',
     border: '2px solid #e0e0e0',
     borderRadius: '10px',
-    marginBottom: '16px',
+    marginBottom: '14px',
     boxSizing: 'border-box',
     outline: 'none',
     textAlign: 'center',
-    letterSpacing: '4px',
   },
   button: {
     width: '100%',
@@ -93,6 +107,7 @@ const styles = {
     fontWeight: 'bold',
     cursor: 'pointer',
     marginBottom: '16px',
+    marginTop: '6px',
   },
   error: { color: '#B02D2F', fontSize: '13px', marginBottom: '10px' },
   note: { color: '#999', fontSize: '12px' },
