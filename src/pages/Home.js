@@ -70,7 +70,7 @@ export default function Home() {
       {/* Header */}
       <div style={styles.header}>
         <div>
-          <h1 style={styles.headerTitle}>🌰 Modern Dryfruit</h1>
+          <img src="/logo-header.png" alt="MDF HealthPlus" style={styles.headerLogo} />
           <p style={styles.headerSub}>Welcome, {user?.phone}</p>
         </div>
         <div style={styles.headerRight}>
@@ -160,17 +160,18 @@ const styles = {
   loadingContainer: { display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' },
   loadingText: { fontSize: '18px', color: '#666' },
   header: {
-    background: 'linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%)',
+    background: 'linear-gradient(135deg, #6E1F21 0%, #B02D2F 100%)',
     padding: '16px 20px',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   headerTitle: { color: 'white', margin: 0, fontSize: '20px' },
+  headerLogo: { height: '38px', width: 'auto', display: 'block' },
   headerSub: { color: '#aaa', margin: 0, fontSize: '12px' },
   headerRight: { display: 'flex', gap: '8px', alignItems: 'center' },
   cartBtn: {
-    background: '#667eea',
+    background: '#B02D2F',
     color: 'white',
     border: 'none',
     borderRadius: '10px',
@@ -222,9 +223,9 @@ const styles = {
     flexShrink: 0,
   },
   catBtnActive: {
-    background: '#667eea',
+    background: '#B02D2F',
     color: 'white',
-    border: '1px solid #667eea',
+    border: '1px solid #B02D2F',
   },
   resultCount: {
     padding: '0 16px',
@@ -248,13 +249,13 @@ const styles = {
   productEmoji: { fontSize: '40px', marginBottom: '8px' },
   productName: { fontSize: '14px', fontWeight: 'bold', margin: '0 0 4px', minHeight: '36px' },
   productCategory: { fontSize: '11px', color: '#999', margin: '0 0 8px' },
-  productPrice: { fontSize: '16px', fontWeight: 'bold', color: '#667eea', margin: '0 0 4px' },
+  productPrice: { fontSize: '16px', fontWeight: 'bold', color: '#B02D2F', margin: '0 0 4px' },
   gstFree: { fontSize: '10px', color: '#2e7d32', fontWeight: 'bold', margin: '0 0 8px', background: '#e8f5e9', display: 'inline-block', padding: '2px 8px', borderRadius: '10px' },
-  qtyBadge: { fontSize: '11px', color: '#667eea', fontWeight: 'bold', marginBottom: '6px' },
+  qtyBadge: { fontSize: '11px', color: '#B02D2F', fontWeight: 'bold', marginBottom: '6px' },
   addBtn: {
     width: '100%',
     padding: '8px',
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    background: 'linear-gradient(135deg, #B02D2F 0%, #7A1F21 100%)',
     color: 'white',
     border: 'none',
     borderRadius: '8px',
