@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { collection, addDoc } from 'firebase/firestore';
-import { db } from '../firebase';
 
 export default function Cart() {
   const [cart, setCart] = useState(JSON.parse(localStorage.getItem('mdCart')) || []);
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem('mdUser'));
 
   const updateQty = (id, delta) => {
     let newCart = cart.map(c => c.id === id ? { ...c, qty: c.qty + delta } : c)
@@ -21,29 +18,6 @@ export default function Cart() {
     return sum + Math.round(c.price * c.qty * gstRate / 100);
   }, 0);
   const grandTotal = subtotal + totalGst;
-
-  const placeOrder = async () => {
-    if (cart.length === 0) return;
-    const order = {
-      name: user?.name || '',
-      phone: user?.phone,
-      items: cart,
-      subtotal,
-      gst: totalGst,
-      grandTotal,
-      status: 'Pending',
-      date: new Date().toLocaleString(),
-    };
-    try {
-      await addDoc(collection(db, 'orders'), order);
-    } catch (error) {
-      const orders = JSON.parse(localStorage.getItem('mdOrders')) || [];
-      orders.push({ ...order, id: Date.now() });
-      localStorage.setItem('mdOrders', JSON.stringify(orders));
-    }
-    localStorage.removeItem('mdCart');
-    navigate('/orders');
-  };
 
   return (
     <div style={styles.container}>
@@ -87,7 +61,7 @@ export default function Cart() {
               <span>₹{subtotal}</span>
             </div>
             <div style={styles.billRow}>
-              <span>GST (5% on applicable items)</span>
+              <span>GST</span>
               <span>₹{totalGst}</span>
             </div>
             <div style={styles.divider} />
@@ -98,8 +72,8 @@ export default function Cart() {
           </div>
 
           <div style={styles.footer}>
-            <button style={styles.orderBtn} onClick={placeOrder}>
-              Place Order — ₹{grandTotal}
+            <button style={styles.orderBtn} onClick={() => navigate('/checkout')}>
+              Proceed to Checkout — ₹{grandTotal}
             </button>
           </div>
         </div>
