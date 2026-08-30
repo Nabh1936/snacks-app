@@ -2,6 +2,12 @@ import React, { useState } from 'react';
 
 const ADMIN_PHONE = '9820891781';
 
+// Bump this string every time you push a change — this is how you'll
+// confirm your phone actually has the latest version. Just change the
+// text (date, or "v1", "v2"...) each time you push, then check this
+// number on your phone after refreshing.
+const APP_VERSION = 'Updated 25 Aug 2026 - v1';
+
 export default function Login() {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -60,6 +66,7 @@ export default function Login() {
           Login →
         </button>
         <p style={styles.note}>Contact Modern Dryfruit to get access</p>
+        <p style={styles.version}>{APP_VERSION}</p>
       </div>
     </div>
   );
@@ -111,4 +118,5 @@ const styles = {
   },
   error: { color: '#B02D2F', fontSize: '13px', marginBottom: '10px' },
   note: { color: '#999', fontSize: '12px' },
+  version: { color: '#ccc', fontSize: '10px', marginTop: '14px' },
 };
