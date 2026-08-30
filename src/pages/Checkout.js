@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { collection, addDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
-
-const MIN_ORDER_VALUE = 0; // set to e.g. 2000 to enforce a minimum order
 
 export default function Checkout() {
   const navigate = useNavigate();
@@ -22,7 +20,6 @@ export default function Checkout() {
   const [error, setError] = useState('');
   const [placing, setPlacing] = useState(false);
 
-  // Pre-fill from last saved delivery details
   useEffect(() => {
     try {
       const saved = JSON.parse(localStorage.getItem('mdDelivery'));
@@ -54,6 +51,33 @@ export default function Checkout() {
     return `MDF-${yy}${mm}${dd}-${rand}`;
   };
 
+  // The order number is generated ONCE per checkout attempt and reused on
+  // every retry (network hiccup, accidental double-tap, page refresh) —
+  // instead of a fresh random ID each time. This is what makes retries safe:
+  // if the first write actually went through, a retry just overwrites the
+  // same order instead of creating a second one.
+  const [orderNumber] = useState(() => {
+    try {
+      const pending = JSON.parse(localStorage.getItem('mdPendingOrder'));
+      const sameCart = pending && pending.cartJSON === JSON.stringify(cart);
+      const stillFresh = pending && Date.now() - pending.time < 30 * 60 * 1000;
+      if (sameCart && stillFresh) {
+        return pending.orderNumber;
+      }
+    } catch (e) {
+      // ignore bad storage, fall through to a fresh number
+    }
+    const fresh = makeOrderNumber();
+    try {
+      localStorage.setItem('mdPendingOrder', JSON.stringify({
+        orderNumber: fresh,
+        cartJSON: JSON.stringify(cart),
+        time: Date.now(),
+      }));
+    } catch (e) {}
+    return fresh;
+  });
+
   const placeOrder = async () => {
     if (placing) return;
     setError('');
@@ -82,10 +106,6 @@ export default function Checkout() {
       setError('Please enter a valid 6 digit pincode.');
       return;
     }
-    if (MIN_ORDER_VALUE > 0 && grandTotal < MIN_ORDER_VALUE) {
-      setError(`Minimum order value is ₹${MIN_ORDER_VALUE}. Please add more items.`);
-      return;
-    }
 
     setPlacing(true);
 
@@ -98,7 +118,7 @@ export default function Checkout() {
     };
 
     const order = {
-      orderNumber: makeOrderNumber(),
+      orderNumber,
       name: user?.name || delivery.shopName,
       phone: user?.phone || delivery.contactPhone,
       delivery,
@@ -115,14 +135,18 @@ export default function Checkout() {
     };
 
     try {
-      const ref = await addDoc(collection(db, 'orders'), order);
+      // setDoc with our own orderNumber as the document ID (instead of
+      // addDoc, which would generate a new random ID every attempt) is
+      // what makes this safe to retry.
+      await setDoc(doc(db, 'orders', orderNumber), order);
       localStorage.setItem('mdDelivery', JSON.stringify(delivery));
-      localStorage.setItem('mdLastOrder', JSON.stringify({ ...order, id: ref.id }));
+      localStorage.setItem('mdLastOrder', JSON.stringify({ ...order, id: orderNumber }));
       localStorage.removeItem('mdCart');
+      localStorage.removeItem('mdPendingOrder');
       navigate('/order-confirmed');
     } catch (err) {
       console.error('Order error:', err);
-      setError('Could not place the order. Please check your connection and try again.');
+      setError('Could not place the order. Please check your connection and try again — it is safe to press Place Order again, it will not create a duplicate.');
       setPlacing(false);
     }
   };
@@ -244,20 +268,18 @@ export default function Checkout() {
 
       <div style={styles.section}>
         <h3 style={styles.sectionTitle}>Order Summary</h3>
-        <div style={styles.bill}>
-          <div style={styles.billRow}>
-            <span>{cart.length} item{cart.length !== 1 ? 's' : ''}</span>
-            <span>₹{subtotal}</span>
-          </div>
-          <div style={styles.billRow}>
-            <span>GST</span>
-            <span>₹{totalGst}</span>
-          </div>
-          <div style={styles.divider} />
-          <div style={{ ...styles.billRow, fontWeight: 'bold', fontSize: '18px' }}>
-            <span>Total Payable</span>
-            <span>₹{grandTotal}</span>
-          </div>
+        <div style={styles.billRow}>
+          <span>{cart.length} item{cart.length !== 1 ? 's' : ''}</span>
+          <span>₹{subtotal}</span>
+        </div>
+        <div style={styles.billRow}>
+          <span>GST</span>
+          <span>₹{totalGst}</span>
+        </div>
+        <div style={styles.divider} />
+        <div style={{ ...styles.billRow, fontWeight: 'bold', fontSize: '18px' }}>
+          <span>Total Payable</span>
+          <span>₹{grandTotal}</span>
         </div>
       </div>
 
@@ -336,7 +358,6 @@ const styles = {
   radioInner: { width: '10px', height: '10px', borderRadius: '50%', background: '#B02D2F' },
   payTitle: { margin: '0 0 2px', fontWeight: 'bold', fontSize: '14px' },
   paySub: { margin: 0, fontSize: '12px', color: '#999' },
-  bill: {},
   billRow: { display: 'flex', justifyContent: 'space-between', marginBottom: '10px', fontSize: '15px' },
   divider: { height: '1px', background: '#eee', margin: '12px 0' },
   error: {
