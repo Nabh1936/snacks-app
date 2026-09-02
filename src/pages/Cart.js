@@ -1,6 +1,22 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+function ItemImage({ item }) {
+  const [failed, setFailed] = useState(false);
+  if (!item.image || failed) {
+    return <div style={styles.itemEmoji}>🥜</div>;
+  }
+  return (
+    <img
+      src={`/product-images/${item.image}`}
+      alt={item.name}
+      style={styles.itemPhoto}
+      onError={() => setFailed(true)}
+      loading="lazy"
+    />
+  );
+}
+
 export default function Cart() {
   const [cart, setCart] = useState(JSON.parse(localStorage.getItem('mdCart')) || []);
   const navigate = useNavigate();
@@ -39,6 +55,7 @@ export default function Cart() {
           <div style={styles.items}>
             {cart.map(item => (
               <div key={item.id} style={styles.cartItem}>
+                <ItemImage item={item} />
                 <div style={styles.itemInfo}>
                   <p style={styles.itemName}>{item.name}</p>
                   <p style={styles.itemPrice}>₹{item.price}/{item.unit}</p>
@@ -97,7 +114,9 @@ const styles = {
   emptyText: { fontSize: '20px', color: '#999', marginBottom: '20px' },
   shopBtn: { padding: '12px 24px', background: '#B02D2F', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontSize: '16px' },
   items: { padding: '16px' },
-  cartItem: { background: 'white', borderRadius: '12px', padding: '16px', marginBottom: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' },
+  cartItem: { background: 'white', borderRadius: '12px', padding: '16px', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' },
+  itemEmoji: { fontSize: '28px', width: '48px', height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  itemPhoto: { width: '48px', height: '48px', objectFit: 'cover', borderRadius: '8px', flexShrink: 0, background: '#f5f5f5' },
   itemInfo: { flex: 1 },
   itemName: { margin: '0 0 4px', fontWeight: 'bold', fontSize: '14px' },
   itemPrice: { margin: 0, color: '#999', fontSize: '12px' },

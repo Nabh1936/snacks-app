@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
+import bundledProducts from '../data/products.json';
+
+const PRICE_CHECK_TIMEOUT_MS = 5000;
 
 export default function Checkout() {
   const navigate = useNavigate();
   const user = (() => {
     try { return JSON.parse(localStorage.getItem('mdUser')); } catch (e) { return null; }
   })();
-  const cart = JSON.parse(localStorage.getItem('mdCart')) || [];
+
+  const [cart, setCart] = useState(() => JSON.parse(localStorage.getItem('mdCart')) || []);
+  const [checkingPrices, setCheckingPrices] = useState(true);
+  const [priceNotice, setPriceNotice] = useState('');
 
   const [shopName, setShopName] = useState(user?.name || '');
   const [contactPhone, setContactPhone] = useState(user?.phone || '');
@@ -33,7 +39,67 @@ export default function Checkout() {
     } catch (e) {
       // ignore
     }
+    reconcilePrices();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Before checkout completes, double-check that cart prices and stock
+  // still match what's actually current — protects against a retailer
+  // checking out on a price that changed, or an item that went out of
+  // stock, after it was added to their cart earlier. Fails open: if the
+  // check can't complete quickly, checkout proceeds with what's in cart
+  // rather than getting stuck.
+  const reconcilePrices = async () => {
+    setCheckingPrices(true);
+    let liveProducts = null;
+
+    try {
+      const fetchPromise = getDocs(collection(db, 'products'));
+      const timeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('timeout')), PRICE_CHECK_TIMEOUT_MS)
+      );
+      const snapshot = await Promise.race([fetchPromise, timeout]);
+      liveProducts = snapshot.docs.map(d => ({ firebaseId: d.id, ...d.data() }));
+    } catch (e) {
+      try {
+        const overlay = JSON.parse(localStorage.getItem('mdProductOverlay'));
+        if (overlay && Array.isArray(overlay.data)) liveProducts = overlay.data;
+      } catch (e2) {}
+      if (!liveProducts) liveProducts = bundledProducts;
+    }
+
+    const byId = {};
+    liveProducts.forEach(p => { byId[p.id] = p; });
+
+    let changedCount = 0;
+    let removedCount = 0;
+    const updatedCart = [];
+
+    const currentCart = JSON.parse(localStorage.getItem('mdCart')) || [];
+    for (const item of currentCart) {
+      const live = byId[item.id];
+      if (!live || live.stock === false) {
+        removedCount++;
+        continue;
+      }
+      if (live.price !== item.price || (live.gst || 0) !== (item.gst || 0)) {
+        changedCount++;
+        updatedCart.push({ ...item, price: live.price, gst: live.gst });
+      } else {
+        updatedCart.push(item);
+      }
+    }
+
+    if (changedCount > 0 || removedCount > 0) {
+      setCart(updatedCart);
+      localStorage.setItem('mdCart', JSON.stringify(updatedCart));
+      const parts = [];
+      if (changedCount > 0) parts.push(`${changedCount} item price${changedCount > 1 ? 's were' : ' was'} updated`);
+      if (removedCount > 0) parts.push(`${removedCount} item${removedCount > 1 ? 's' : ''} removed — out of stock`);
+      setPriceNotice(parts.join(' · '));
+    }
+    setCheckingPrices(false);
+  };
 
   const subtotal = cart.reduce((sum, c) => sum + c.price * c.qty, 0);
   const totalGst = cart.reduce((sum, c) => {
@@ -51,11 +117,9 @@ export default function Checkout() {
     return `MDF-${yy}${mm}${dd}-${rand}`;
   };
 
-  // The order number is generated ONCE per checkout attempt and reused on
-  // every retry (network hiccup, accidental double-tap, page refresh) —
-  // instead of a fresh random ID each time. This is what makes retries safe:
-  // if the first write actually went through, a retry just overwrites the
-  // same order instead of creating a second one.
+  // Generated once per checkout attempt and reused on retry (network
+  // hiccup, accidental double-tap, page refresh) so a retry overwrites
+  // the same order instead of creating a duplicate.
   const [orderNumber] = useState(() => {
     try {
       const pending = JSON.parse(localStorage.getItem('mdPendingOrder'));
@@ -79,7 +143,7 @@ export default function Checkout() {
   });
 
   const placeOrder = async () => {
-    if (placing) return;
+    if (placing || checkingPrices) return;
     setError('');
 
     if (cart.length === 0) {
@@ -135,9 +199,6 @@ export default function Checkout() {
     };
 
     try {
-      // setDoc with our own orderNumber as the document ID (instead of
-      // addDoc, which would generate a new random ID every attempt) is
-      // what makes this safe to retry.
       await setDoc(doc(db, 'orders', orderNumber), order);
       localStorage.setItem('mdDelivery', JSON.stringify(delivery));
       localStorage.setItem('mdLastOrder', JSON.stringify({ ...order, id: orderNumber }));
@@ -176,6 +237,12 @@ export default function Checkout() {
         <h2 style={styles.headerTitle}>Checkout</h2>
         <div />
       </div>
+
+      {priceNotice && (
+        <div style={styles.priceNotice}>
+          ℹ️ {priceNotice}. Totals below reflect the current price.
+        </div>
+      )}
 
       <div style={styles.section}>
         <h3 style={styles.sectionTitle}>Delivery Details</h3>
@@ -286,8 +353,8 @@ export default function Checkout() {
       {error && <p style={styles.error}>{error}</p>}
 
       <div style={styles.footer}>
-        <button style={styles.orderBtn} onClick={placeOrder} disabled={placing}>
-          {placing ? 'Placing Order...' : `Place Order — ₹${grandTotal}`}
+        <button style={styles.orderBtn} onClick={placeOrder} disabled={placing || checkingPrices}>
+          {checkingPrices ? 'Checking latest prices...' : placing ? 'Placing Order...' : `Place Order — ₹${grandTotal}`}
         </button>
         <p style={styles.footNote}>
           You will pay ₹{grandTotal} in cash at the time of delivery.
@@ -311,6 +378,15 @@ const styles = {
   empty: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' },
   emptyText: { fontSize: '20px', color: '#999', marginBottom: '20px' },
   shopBtn: { padding: '12px 24px', background: '#B02D2F', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontSize: '16px' },
+  priceNotice: {
+    margin: '14px 16px 0',
+    padding: '12px 14px',
+    background: '#FFF9E0',
+    border: '1px solid #F0DE8C',
+    borderRadius: '10px',
+    fontSize: '13px',
+    color: '#7A6100',
+  },
   section: {
     background: 'white',
     margin: '14px 16px 0',

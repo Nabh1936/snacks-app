@@ -5,15 +5,33 @@ import { db } from '../firebase';
 import bundledProducts from '../data/products.json';
 
 const OVERLAY_KEY = 'mdProductOverlay';
-const OVERLAY_TTL_MS = 30 * 60 * 1000; // re-check Firebase at most every 30 min
-const FETCH_TIMEOUT_MS = 8000;         // never hang longer than 8 seconds
+const OVERLAY_TTL_MS = 30 * 60 * 1000;
+const FETCH_TIMEOUT_MS = 8000;
+
+// Shows the real product photo if one exists in /public/product-images/,
+// and automatically falls back to the emoji if it doesn't (e.g. this
+// product's photo hasn't been taken yet). No code changes are ever
+// needed when new photos arrive — just drop the file in the folder.
+function ProductImage({ product }) {
+  const [failed, setFailed] = useState(false);
+  if (!product.image || failed) {
+    return <div style={styles.productEmoji}>🥜</div>;
+  }
+  return (
+    <img
+      src={`/product-images/${product.image}`}
+      alt={product.name}
+      style={styles.productPhoto}
+      onError={() => setFailed(true)}
+      loading="lazy"
+    />
+  );
+}
 
 export default function Home() {
   const user = (() => { try { return JSON.parse(localStorage.getItem('mdUser')); } catch (e) { return null; } })();
   const navigate = useNavigate();
 
-  // Start from the bundled catalogue so the app is usable instantly,
-  // with zero database reads and no possibility of hanging.
   const [products, setProducts] = useState(() => {
     try {
       const saved = JSON.parse(localStorage.getItem(OVERLAY_KEY));
@@ -37,8 +55,6 @@ export default function Home() {
     if (stale) syncFromFirebase(false);
   }, []);
 
-  // Pulls latest prices/stock from Firebase. Purely optional — if it fails,
-  // times out, or the daily quota is exhausted, the app keeps working.
   const syncFromFirebase = async (showFeedback) => {
     if (syncing) return;
     setSyncing(true);
@@ -51,6 +67,15 @@ export default function Home() {
 
       const live = snapshot.docs.map(d => ({ firebaseId: d.id, ...d.data() }));
       if (live.length > 0) {
+        // Firestore products may not carry the "image" field (it's set
+        // in the bundled catalogue). Fill it in from the bundled data by
+        // matching id, so photos keep working even after a live sync.
+        const imageById = {};
+        bundledProducts.forEach(p => { imageById[p.id] = p.image; });
+        live.forEach(p => {
+          if (!p.image && imageById[p.id]) p.image = imageById[p.id];
+        });
+
         live.sort((a, b) => String(a.name).localeCompare(String(b.name)));
         setProducts(live);
         try {
@@ -157,7 +182,7 @@ export default function Home() {
           const outOfStock = product.stock === false;
           return (
             <div key={product.id} style={{ ...styles.productCard, ...(outOfStock ? styles.productCardDisabled : {}) }}>
-              <div style={styles.productEmoji}>🥜</div>
+              <ProductImage product={product} />
               <p style={styles.productName}>{product.name}</p>
               <p style={styles.productCategory}>{product.category}</p>
               <p style={styles.productPrice}>₹{product.price}/{product.unit}</p>
@@ -211,6 +236,7 @@ const styles = {
   productCard: { background: 'white', borderRadius: '12px', padding: '16px', textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' },
   productCardDisabled: { opacity: 0.6 },
   productEmoji: { fontSize: '40px', marginBottom: '8px' },
+  productPhoto: { width: '100%', height: '96px', objectFit: 'cover', borderRadius: '8px', marginBottom: '8px', background: '#f5f5f5' },
   productName: { fontSize: '14px', fontWeight: 'bold', margin: '0 0 4px', minHeight: '36px' },
   productCategory: { fontSize: '11px', color: '#999', margin: '0 0 8px' },
   productPrice: { fontSize: '16px', fontWeight: 'bold', color: '#B02D2F', margin: '0 0 4px' },

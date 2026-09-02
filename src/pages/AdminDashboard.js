@@ -82,13 +82,18 @@ export default function AdminDashboard() {
     }
   };
 
-  const isSameDay = (dateStr, ref) => {
-    const d = new Date(dateStr);
+  // Date filters now use the reliable numeric createdAt timestamp instead of
+  // re-parsing the human-readable date string. Orders placed before this
+  // field existed won't match Today/This Week (they'll still show under All).
+  const isSameDay = (timestamp, ref) => {
+    if (!timestamp) return false;
+    const d = new Date(timestamp);
     return d.toDateString() === ref.toDateString();
   };
 
-  const isWithinDays = (dateStr, days) => {
-    const d = new Date(dateStr);
+  const isWithinDays = (timestamp, days) => {
+    if (!timestamp) return false;
+    const d = new Date(timestamp);
     const now = new Date();
     const diff = (now - d) / (1000 * 60 * 60 * 24);
     return diff <= days;
@@ -101,8 +106,8 @@ export default function AdminDashboard() {
       || (o.name || '').toLowerCase().includes(term)
       || (o.orderNumber || '').toLowerCase().includes(term);
     let matchDate = true;
-    if (dateFilter === 'today') matchDate = isSameDay(o.date, new Date());
-    if (dateFilter === 'week') matchDate = isWithinDays(o.date, 7);
+    if (dateFilter === 'today') matchDate = isSameDay(o.createdAt, new Date());
+    if (dateFilter === 'week') matchDate = isWithinDays(o.createdAt, 7);
     return matchSearch && matchDate;
   });
 
