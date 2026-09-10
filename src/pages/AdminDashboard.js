@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc, deleteDoc, setDoc, increment } from 'firebase/firestore';
 import { db } from '../firebase';
 import { enableOrderNotifications } from '../notifications';
 
 export default function AdminDashboard() {
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
+  const [retailers, setRetailers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState('orders');
   const [searchPhone, setSearchPhone] = useState('');
@@ -13,7 +14,13 @@ export default function AdminDashboard() {
   const [stockSearch, setStockSearch] = useState('');
   const [confirmClear, setConfirmClear] = useState(false);
   const [clearing, setClearing] = useState(false);
-  const [notifStatus, setNotifStatus] = useState('idle'); // idle | working | on | error
+  const [notifStatus, setNotifStatus] = useState('idle');
+
+  const [newCreditPhone, setNewCreditPhone] = useState('');
+  const [newCreditName, setNewCreditName] = useState('');
+  const [newCreditLimit, setNewCreditLimit] = useState('');
+  const [savingCredit, setSavingCredit] = useState(false);
+  const [editingLimits, setEditingLimits] = useState({});
 
   const user = (() => { try { return JSON.parse(localStorage.getItem('mdUser')); } catch (e) { return null; } })();
 
@@ -32,6 +39,11 @@ export default function AdminDashboard() {
       const prodList = prodSnap.docs.map(d => ({ firebaseId: d.id, ...d.data() }));
       prodList.sort((a, b) => a.name.localeCompare(b.name));
       setProducts(prodList);
+
+      const retailerSnap = await getDocs(collection(db, 'retailers'));
+      const retailerList = retailerSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      retailerList.sort((a, b) => (b.balanceOwed || 0) - (a.balanceOwed || 0));
+      setRetailers(retailerList);
     } catch (error) {
       console.error('Error:', error);
     } finally {
@@ -54,12 +66,47 @@ export default function AdminDashboard() {
     }
   };
 
-  const markPaid = async (orderId) => {
+  const markPaid = async (order) => {
     try {
-      await updateDoc(doc(db, 'orders', orderId), { paymentStatus: 'Paid' });
-      setOrders(orders.map(o => o.id === orderId ? { ...o, paymentStatus: 'Paid' } : o));
+      await updateDoc(doc(db, 'orders', order.id), { paymentStatus: 'Paid' });
+      setOrders(orders.map(o => o.id === order.id ? { ...o, paymentStatus: 'Paid' } : o));
+
+      if (order.paymentMethod && order.paymentMethod.startsWith('Credit') && order.phone) {
+        const retailer = retailers.find(r => r.id === order.phone);
+        const currentBalance = retailer ? (retailer.balanceOwed || 0) : order.grandTotal;
+        const predictedNewBalance = currentBalance - order.grandTotal;
+
+        const updates = {
+          balanceOwed: increment(-order.grandTotal),
+          updatedAt: Date.now(),
+        };
+        // Only lift the hold once the balance is fully cleared — a partial
+        // payment does not reopen credit, per how this is meant to work.
+        if (predictedNewBalance <= 0) {
+          updates.creditBlocked = false;
+        }
+
+        await setDoc(doc(db, 'retailers', order.phone), updates, { merge: true });
+        setRetailers(retailers.map(r =>
+          r.id === order.phone
+            ? { ...r, balanceOwed: predictedNewBalance, ...(predictedNewBalance <= 0 ? { creditBlocked: false } : {}) }
+            : r
+        ));
+      }
     } catch (error) {
       console.error('Error marking paid:', error);
+    }
+  };
+
+  const manuallyUnblockCredit = async (retailerId) => {
+    try {
+      await updateDoc(doc(db, 'retailers', retailerId), {
+        creditBlocked: false,
+        updatedAt: Date.now(),
+      });
+      setRetailers(retailers.map(r => r.id === retailerId ? { ...r, creditBlocked: false } : r));
+    } catch (error) {
+      console.error('Error unblocking credit:', error);
     }
   };
 
@@ -89,6 +136,59 @@ export default function AdminDashboard() {
     } finally {
       setClearing(false);
       setConfirmClear(false);
+    }
+  };
+
+  const saveNewCredit = async () => {
+    const phone = newCreditPhone.trim();
+    const limit = Number(newCreditLimit);
+    if (phone.length !== 10 || isNaN(phone)) {
+      alert('Enter a valid 10 digit phone number.');
+      return;
+    }
+    if (!newCreditLimit || isNaN(limit) || limit < 0) {
+      alert('Enter a valid credit limit.');
+      return;
+    }
+    setSavingCredit(true);
+    try {
+      await setDoc(doc(db, 'retailers', phone), {
+        phone,
+        name: newCreditName.trim(),
+        creditLimit: limit,
+        updatedAt: Date.now(),
+      }, { merge: true });
+      await fetchAll();
+      setNewCreditPhone('');
+      setNewCreditName('');
+      setNewCreditLimit('');
+    } catch (error) {
+      console.error('Error saving credit:', error);
+      alert('Could not save. Please try again.');
+    } finally {
+      setSavingCredit(false);
+    }
+  };
+
+  const saveEditedLimit = async (retailerId) => {
+    const newLimit = Number(editingLimits[retailerId]);
+    if (isNaN(newLimit) || newLimit < 0) {
+      alert('Enter a valid credit limit.');
+      return;
+    }
+    try {
+      await updateDoc(doc(db, 'retailers', retailerId), {
+        creditLimit: newLimit,
+        updatedAt: Date.now(),
+      });
+      setRetailers(retailers.map(r => r.id === retailerId ? { ...r, creditLimit: newLimit } : r));
+      setEditingLimits(prev => {
+        const next = { ...prev };
+        delete next[retailerId];
+        return next;
+      });
+    } catch (error) {
+      console.error('Error updating limit:', error);
     }
   };
 
@@ -126,8 +226,9 @@ export default function AdminDashboard() {
   const totalRevenue = orders.reduce((sum, o) => sum + (o.grandTotal || 0), 0);
   const pendingOrders = orders.filter(o => o.status === 'Pending').length;
   const cashToCollect = orders
-    .filter(o => o.paymentStatus !== 'Paid')
+    .filter(o => o.paymentStatus !== 'Paid' && (!o.paymentMethod || !o.paymentMethod.startsWith('Credit')))
     .reduce((sum, o) => sum + (o.grandTotal || 0), 0);
+  const totalCreditOutstanding = retailers.reduce((sum, r) => sum + (r.balanceOwed || 0), 0);
   const outOfStockCount = products.filter(p => !p.stock).length;
 
   if (loading) {
@@ -179,14 +280,16 @@ export default function AdminDashboard() {
           <p style={styles.statLabel}>Pending</p>
         </div>
         <div style={styles.statCard}>
-          <p style={styles.statNumber}>₹{totalRevenue.toLocaleString('en-IN')}</p>
-          <p style={styles.statLabel}>Total Value</p>
-        </div>
-        <div style={styles.statCard}>
           <p style={{ ...styles.statNumber, color: cashToCollect > 0 ? '#E67E00' : '#2e7d32' }}>
             ₹{cashToCollect.toLocaleString('en-IN')}
           </p>
           <p style={styles.statLabel}>Cash to Collect</p>
+        </div>
+        <div style={styles.statCard}>
+          <p style={{ ...styles.statNumber, color: totalCreditOutstanding > 0 ? '#6E1F21' : '#2e7d32' }}>
+            ₹{totalCreditOutstanding.toLocaleString('en-IN')}
+          </p>
+          <p style={styles.statLabel}>Credit Outstanding</p>
         </div>
       </div>
 
@@ -201,7 +304,13 @@ export default function AdminDashboard() {
           style={{ ...styles.tabBtn, ...(tab === 'stock' ? styles.tabBtnActive : {}) }}
           onClick={() => setTab('stock')}
         >
-          🏷️ Manage Stock
+          🏷️ Stock
+        </button>
+        <button
+          style={{ ...styles.tabBtn, ...(tab === 'credit' ? styles.tabBtnActive : {}) }}
+          onClick={() => setTab('credit')}
+        >
+          💳 Credit
         </button>
       </div>
 
@@ -257,85 +366,88 @@ export default function AdminDashboard() {
           {filteredOrders.length === 0 ? (
             <p style={styles.noOrders}>No orders match this filter</p>
           ) : (
-            filteredOrders.map(order => (
-              <div key={order.id} style={styles.orderCard}>
-                <div style={styles.orderHeader}>
-                  <div>
-                    <span style={styles.orderNum}>
-                      {order.orderNumber || `#${order.id?.slice(-6)}`}
-                    </span>
-                    {order.name && <span style={styles.orderName}>{order.name}</span>}
-                    <span style={styles.orderPhoneSub}>📱 {order.phone}</span>
+            filteredOrders.map(order => {
+              const isCredit = order.paymentMethod && order.paymentMethod.startsWith('Credit');
+              return (
+                <div key={order.id} style={styles.orderCard}>
+                  <div style={styles.orderHeader}>
+                    <div>
+                      <span style={styles.orderNum}>
+                        {order.orderNumber || `#${order.id?.slice(-6)}`}
+                      </span>
+                      {order.name && <span style={styles.orderName}>{order.name}</span>}
+                      <span style={styles.orderPhoneSub}>📱 {order.phone}</span>
+                    </div>
+                    <span style={{
+                      ...styles.orderStatus,
+                      background: order.status === 'Dispatched' ? '#e8f5e9' : '#FFF6D9',
+                      color: order.status === 'Dispatched' ? '#2e7d32' : '#8A6D00',
+                    }}>{order.status}</span>
                   </div>
-                  <span style={{
-                    ...styles.orderStatus,
-                    background: order.status === 'Dispatched' ? '#e8f5e9' : '#FFF6D9',
-                    color: order.status === 'Dispatched' ? '#2e7d32' : '#8A6D00',
-                  }}>{order.status}</span>
-                </div>
 
-                <p style={styles.orderDate}>{order.date}</p>
+                  <p style={styles.orderDate}>{order.date}</p>
 
-                {order.delivery && (
-                  <div style={styles.addressBox}>
-                    <p style={styles.addressText}>
-                      📍 {order.delivery.address}, {order.delivery.city} - {order.delivery.pincode}
-                    </p>
-                    {order.delivery.contactPhone !== order.phone && (
-                      <p style={styles.addressText}>☎️ {order.delivery.contactPhone}</p>
+                  {order.delivery && (
+                    <div style={styles.addressBox}>
+                      <p style={styles.addressText}>
+                        📍 {order.delivery.address}, {order.delivery.city} - {order.delivery.pincode}
+                      </p>
+                      {order.delivery.contactPhone !== order.phone && (
+                        <p style={styles.addressText}>☎️ {order.delivery.contactPhone}</p>
+                      )}
+                    </div>
+                  )}
+
+                  {order.notes && (
+                    <p style={styles.notes}>📝 {order.notes}</p>
+                  )}
+
+                  {order.items?.map((item, i) => (
+                    <div key={i} style={styles.orderItem}>
+                      <span>{item.name} x{item.qty}</span>
+                      <span>₹{item.price * item.qty}</span>
+                    </div>
+                  ))}
+
+                  <div style={styles.orderTotal}>
+                    <span>Grand Total</span>
+                    <span>₹{order.grandTotal}</span>
+                  </div>
+
+                  <div style={styles.payRow}>
+                    <span style={styles.payLabel}>
+                      {order.paymentMethod || 'Cash on Delivery'}
+                    </span>
+                    <span style={{
+                      ...styles.payBadge,
+                      background: order.paymentStatus === 'Paid' ? '#e8f5e9' : (isCredit ? '#FDF4F4' : '#FDEAEA'),
+                      color: order.paymentStatus === 'Paid' ? '#2e7d32' : (isCredit ? '#6E1F21' : '#B02D2F'),
+                    }}>
+                      {order.paymentStatus === 'Paid' ? (isCredit ? 'Credit Settled' : 'Cash Received') : (isCredit ? 'On Credit' : 'Cash Pending')}
+                    </span>
+                  </div>
+
+                  <div style={styles.actionRow}>
+                    {order.status === 'Pending' && (
+                      <button
+                        style={styles.dispatchBtn}
+                        onClick={() => updateStatus(order.id, 'Dispatched')}
+                      >
+                        Mark Dispatched
+                      </button>
+                    )}
+                    {order.paymentStatus !== 'Paid' && (
+                      <button
+                        style={isCredit ? styles.creditBtn : styles.cashBtn}
+                        onClick={() => markPaid(order)}
+                      >
+                        {isCredit ? '💳 Mark Credit Paid' : '💵 Cash Received'}
+                      </button>
                     )}
                   </div>
-                )}
-
-                {order.notes && (
-                  <p style={styles.notes}>📝 {order.notes}</p>
-                )}
-
-                {order.items?.map((item, i) => (
-                  <div key={i} style={styles.orderItem}>
-                    <span>{item.name} x{item.qty}</span>
-                    <span>₹{item.price * item.qty}</span>
-                  </div>
-                ))}
-
-                <div style={styles.orderTotal}>
-                  <span>Grand Total</span>
-                  <span>₹{order.grandTotal}</span>
                 </div>
-
-                <div style={styles.payRow}>
-                  <span style={styles.payLabel}>
-                    {order.paymentMethod || 'Cash on Delivery'}
-                  </span>
-                  <span style={{
-                    ...styles.payBadge,
-                    background: order.paymentStatus === 'Paid' ? '#e8f5e9' : '#FDEAEA',
-                    color: order.paymentStatus === 'Paid' ? '#2e7d32' : '#B02D2F',
-                  }}>
-                    {order.paymentStatus === 'Paid' ? 'Cash Received' : 'Cash Pending'}
-                  </span>
-                </div>
-
-                <div style={styles.actionRow}>
-                  {order.status === 'Pending' && (
-                    <button
-                      style={styles.dispatchBtn}
-                      onClick={() => updateStatus(order.id, 'Dispatched')}
-                    >
-                      Mark Dispatched
-                    </button>
-                  )}
-                  {order.paymentStatus !== 'Paid' && (
-                    <button
-                      style={styles.cashBtn}
-                      onClick={() => markPaid(order.id)}
-                    >
-                      💵 Cash Received
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       )}
@@ -374,6 +486,120 @@ export default function AdminDashboard() {
               </button>
             </div>
           ))}
+        </div>
+      )}
+
+      {tab === 'credit' && (
+        <div style={styles.section}>
+          <div style={styles.creditFormBox}>
+            <h3 style={styles.sectionTitle}>Set Credit for a Retailer</h3>
+            <label style={styles.label}>Phone Number</label>
+            <input
+              style={styles.input}
+              type="tel"
+              inputMode="numeric"
+              value={newCreditPhone}
+              onChange={e => setNewCreditPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
+              placeholder="10 digit number"
+            />
+            <label style={styles.label}>Name (optional)</label>
+            <input
+              style={styles.input}
+              type="text"
+              value={newCreditName}
+              onChange={e => setNewCreditName(e.target.value)}
+              placeholder="Shop or retailer name"
+            />
+            <label style={styles.label}>Credit Limit (₹)</label>
+            <input
+              style={styles.input}
+              type="number"
+              value={newCreditLimit}
+              onChange={e => setNewCreditLimit(e.target.value)}
+              placeholder="e.g. 20000"
+            />
+            <button style={styles.saveCreditBtn} onClick={saveNewCredit} disabled={savingCredit}>
+              {savingCredit ? 'Saving...' : 'Save Credit Limit'}
+            </button>
+            <p style={styles.creditFormNote}>
+              If this phone number already has a credit limit set, this updates it. Their current balance owed is not affected.
+            </p>
+          </div>
+
+          <h3 style={styles.sectionTitle}>Retailers on Credit</h3>
+          {retailers.length === 0 ? (
+            <p style={styles.noOrders}>No retailers have a credit limit set yet</p>
+          ) : (
+            retailers.map(r => {
+              const limit = r.creditLimit || 0;
+              const balance = r.balanceOwed || 0;
+              const available = Math.max(0, limit - balance);
+              const isEditing = editingLimits[r.id] !== undefined;
+              const isBlocked = !!r.creditBlocked;
+              return (
+                <div key={r.id} style={styles.creditRow}>
+                  <div style={styles.creditRowTop}>
+                    <div>
+                      <p style={styles.creditName}>
+                        {r.name || 'Unnamed'}
+                        {isBlocked && <span style={styles.holdBadge}>🔒 On Hold</span>}
+                      </p>
+                      <p style={styles.creditPhone}>📱 {r.phone || r.id}</p>
+                    </div>
+                    <div style={styles.creditBalanceBox}>
+                      <p style={{ ...styles.creditBalanceNum, color: balance > 0 ? '#B02D2F' : '#2e7d32' }}>
+                        ₹{balance.toLocaleString('en-IN')}
+                      </p>
+                      <p style={styles.creditBalanceLabel}>owed</p>
+                    </div>
+                  </div>
+                  <div style={styles.creditMetaRow}>
+                    <span>Limit: ₹{limit.toLocaleString('en-IN')}</span>
+                    <span>Available: {isBlocked ? '₹0 (on hold)' : `₹${available.toLocaleString('en-IN')}`}</span>
+                  </div>
+                  {isEditing ? (
+                    <div style={styles.editLimitRow}>
+                      <input
+                        style={styles.editLimitInput}
+                        type="number"
+                        value={editingLimits[r.id]}
+                        onChange={e => setEditingLimits(prev => ({ ...prev, [r.id]: e.target.value }))}
+                        placeholder="New limit"
+                      />
+                      <button style={styles.editSaveBtn} onClick={() => saveEditedLimit(r.id)}>Save</button>
+                      <button
+                        style={styles.editCancelBtn}
+                        onClick={() => setEditingLimits(prev => { const n = { ...prev }; delete n[r.id]; return n; })}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  ) : (
+                    <div style={styles.creditRowActions}>
+                      <button
+                        style={styles.editLimitBtn}
+                        onClick={() => setEditingLimits(prev => ({ ...prev, [r.id]: String(limit) }))}
+                      >
+                        Edit Limit
+                      </button>
+                      {isBlocked && (
+                        <button
+                          style={styles.unblockBtn}
+                          onClick={() => {
+                            if (window.confirm(`Manually restore credit for ${r.name || r.phone} even though ₹${balance} is still owed?`)) {
+                              manuallyUnblockCredit(r.id);
+                            }
+                          }}
+                        >
+                          Manually Restore Credit
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          )}
         </div>
       )}
     </div>
@@ -427,10 +653,10 @@ const styles = {
   },
   stats: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', padding: '16px' },
   statCard: { background: 'white', borderRadius: '12px', padding: '14px', textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' },
-  statNumber: { fontSize: '19px', fontWeight: 'bold', color: '#B02D2F', margin: '0 0 4px' },
+  statNumber: { fontSize: '17px', fontWeight: 'bold', color: '#B02D2F', margin: '0 0 4px' },
   statLabel: { color: '#999', margin: 0, fontSize: '11px' },
   tabs: { display: 'flex', gap: '8px', padding: '0 16px 12px' },
-  tabBtn: { flex: 1, padding: '12px', border: '1px solid #ddd', background: 'white', borderRadius: '10px', fontSize: '14px', fontWeight: 'bold', cursor: 'pointer', color: '#666' },
+  tabBtn: { flex: 1, padding: '12px', border: '1px solid #ddd', background: 'white', borderRadius: '10px', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer', color: '#666' },
   tabBtnActive: { background: '#B02D2F', color: 'white', border: '1px solid #B02D2F' },
   section: { padding: '0 16px 40px' },
   clearBox: { marginBottom: '14px' },
@@ -473,9 +699,40 @@ const styles = {
   actionRow: { display: 'flex', gap: '8px', marginTop: '12px' },
   dispatchBtn: { flex: 1, padding: '10px', background: '#2e7d32', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' },
   cashBtn: { flex: 1, padding: '10px', background: '#E67E00', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' },
+  creditBtn: { flex: 1, padding: '10px', background: '#6E1F21', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' },
   stockRow: { background: 'white', borderRadius: '12px', padding: '14px 16px', marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' },
   stockInfo: { flex: 1 },
   stockName: { margin: '0 0 4px', fontWeight: 'bold', fontSize: '14px' },
   stockMeta: { margin: 0, color: '#999', fontSize: '12px' },
   stockToggle: { border: 'none', borderRadius: '20px', padding: '8px 14px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', whiteSpace: 'nowrap' },
+  creditFormBox: { background: 'white', borderRadius: '12px', padding: '18px', marginBottom: '20px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' },
+  label: { display: 'block', fontSize: '12px', color: '#777', marginBottom: '5px', fontWeight: 'bold' },
+  input: {
+    width: '100%',
+    padding: '12px',
+    fontSize: '15px',
+    border: '2px solid #e0e0e0',
+    borderRadius: '10px',
+    marginBottom: '14px',
+    boxSizing: 'border-box',
+    outline: 'none',
+  },
+  saveCreditBtn: { width: '100%', padding: '12px', background: 'linear-gradient(135deg, #B02D2F 0%, #7A1F21 100%)', color: 'white', border: 'none', borderRadius: '10px', fontSize: '14px', fontWeight: 'bold', cursor: 'pointer' },
+  creditFormNote: { fontSize: '11px', color: '#999', marginTop: '10px', marginBottom: 0 },
+  creditRow: { background: 'white', borderRadius: '12px', padding: '14px 16px', marginBottom: '10px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' },
+  creditRowTop: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' },
+  creditName: { margin: '0 0 4px', fontWeight: 'bold', fontSize: '14px' },
+  creditPhone: { margin: 0, fontSize: '12px', color: '#999' },
+  creditBalanceBox: { textAlign: 'right' },
+  creditBalanceNum: { margin: '0 0 2px', fontWeight: 'bold', fontSize: '16px' },
+  creditBalanceLabel: { margin: 0, fontSize: '10px', color: '#999' },
+  creditMetaRow: { display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#666', marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #f0f0f0' },
+  editLimitBtn: { marginTop: '10px', padding: '8px 14px', background: 'white', border: '1px solid #B02D2F', color: '#B02D2F', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' },
+  creditRowActions: { display: 'flex', gap: '8px', flexWrap: 'wrap' },
+  holdBadge: { marginLeft: '8px', fontSize: '10px', fontWeight: 'bold', color: '#B02D2F', background: '#FDEAEA', padding: '2px 8px', borderRadius: '10px' },
+  unblockBtn: { marginTop: '10px', padding: '8px 14px', background: '#6E1F21', color: 'white', border: 'none', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' },
+  editLimitRow: { display: 'flex', gap: '8px', marginTop: '10px' },
+  editLimitInput: { flex: 1, padding: '8px', border: '2px solid #e0e0e0', borderRadius: '8px', fontSize: '13px' },
+  editSaveBtn: { padding: '8px 14px', background: '#2e7d32', color: 'white', border: 'none', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' },
+  editCancelBtn: { padding: '8px 14px', background: 'white', border: '1px solid #ccc', borderRadius: '8px', fontSize: '12px', cursor: 'pointer' },
 };

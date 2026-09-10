@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { doc, setDoc, collection, getDocs } from 'firebase/firestore';
+import { doc, setDoc, getDoc, increment, collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 import bundledProducts from '../data/products.json';
 
 const PRICE_CHECK_TIMEOUT_MS = 5000;
+const CREDIT_CHECK_TIMEOUT_MS = 5000;
 
 export default function Checkout() {
   const navigate = useNavigate();
@@ -26,6 +27,10 @@ export default function Checkout() {
   const [error, setError] = useState('');
   const [placing, setPlacing] = useState(false);
 
+  const [creditLimit, setCreditLimit] = useState(0);
+  const [creditBalance, setCreditBalance] = useState(0);
+  const [checkingCredit, setCheckingCredit] = useState(true);
+
   useEffect(() => {
     try {
       const saved = JSON.parse(localStorage.getItem('mdDelivery'));
@@ -40,8 +45,40 @@ export default function Checkout() {
       // ignore
     }
     reconcilePrices();
+    fetchCreditInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const fetchCreditInfo = async () => {
+    setCheckingCredit(true);
+    try {
+      const phone = user?.phone;
+      if (!phone) {
+        setCreditLimit(0);
+        setCreditBalance(0);
+        return;
+      }
+      const fetchPromise = getDoc(doc(db, 'retailers', phone));
+      const timeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('timeout')), CREDIT_CHECK_TIMEOUT_MS)
+      );
+      const snap = await Promise.race([fetchPromise, timeout]);
+      if (snap.exists()) {
+        const data = snap.data();
+        setCreditLimit(Number(data.creditLimit) || 0);
+        setCreditBalance(Number(data.balanceOwed) || 0);
+      } else {
+        setCreditLimit(0);
+        setCreditBalance(0);
+      }
+    } catch (e) {
+      // No credit info available — safest default is no credit, not unlimited
+      setCreditLimit(0);
+      setCreditBalance(0);
+    } finally {
+      setCheckingCredit(false);
+    }
+  };
 
   const reconcilePrices = async () => {
     setCheckingPrices(true);
@@ -102,6 +139,10 @@ export default function Checkout() {
   }, 0);
   const grandTotal = subtotal + totalGst;
 
+  const availableCredit = Math.max(0, creditLimit - creditBalance);
+  const creditEligible = creditLimit > 0;
+  const creditCoversOrder = grandTotal <= availableCredit;
+
   const makeOrderNumber = () => {
     const d = new Date();
     const yy = String(d.getFullYear()).slice(-2);
@@ -134,7 +175,7 @@ export default function Checkout() {
   });
 
   const placeOrder = async () => {
-    if (placing || checkingPrices) return;
+    if (placing || checkingPrices || checkingCredit) return;
     setError('');
 
     if (cart.length === 0) {
@@ -161,6 +202,10 @@ export default function Checkout() {
       setError('Please enter a valid 6 digit pincode.');
       return;
     }
+    if (paymentMethod === 'Credit' && !creditCoversOrder) {
+      setError(`This order (₹${grandTotal}) exceeds your available credit (₹${availableCredit}). Please choose Cash on Delivery or reduce the order.`);
+      return;
+    }
 
     setPlacing(true);
 
@@ -182,7 +227,7 @@ export default function Checkout() {
       subtotal,
       gst: totalGst,
       grandTotal,
-      paymentMethod: 'Cash on Delivery',
+      paymentMethod: paymentMethod === 'Credit' ? 'Credit (Udhar)' : 'Cash on Delivery',
       paymentStatus: 'Unpaid',
       status: 'Pending',
       date: new Date().toLocaleString(),
@@ -191,15 +236,22 @@ export default function Checkout() {
 
     try {
       await setDoc(doc(db, 'orders', orderNumber), order);
+
+      if (paymentMethod === 'Credit') {
+        const phone = user?.phone || delivery.contactPhone;
+        await setDoc(doc(db, 'retailers', phone), {
+          phone,
+          name: order.name,
+          balanceOwed: increment(grandTotal),
+          updatedAt: Date.now(),
+        }, { merge: true });
+      }
+
       localStorage.setItem('mdDelivery', JSON.stringify(delivery));
       localStorage.setItem('mdLastOrder', JSON.stringify({ ...order, id: orderNumber }));
       localStorage.removeItem('mdCart');
       localStorage.removeItem('mdPendingOrder');
 
-      // Best-effort push notification to the admin's phone. This must never
-      // block or break checkout — if it fails, the order still went through
-      // fine, the admin just won't get a buzz and will see it next time
-      // they open the dashboard.
       fetch('/api/notify-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -326,6 +378,44 @@ export default function Checkout() {
           </div>
         </div>
 
+        {checkingCredit ? (
+          <div style={{ ...styles.payOption, ...styles.payOptionDisabled }}>
+            <div style={styles.radioOuter} />
+            <div>
+              <p style={{ ...styles.payTitle, color: '#aaa' }}>Checking credit...</p>
+            </div>
+          </div>
+        ) : creditEligible ? (
+          <div
+            style={{
+              ...styles.payOption,
+              ...(paymentMethod === 'Credit' ? styles.payOptionActive : {}),
+              ...(!creditCoversOrder ? styles.payOptionDisabled : {}),
+            }}
+            onClick={() => creditCoversOrder && setPaymentMethod('Credit')}
+          >
+            <div style={styles.radioOuter}>
+              {paymentMethod === 'Credit' && <div style={styles.radioInner} />}
+            </div>
+            <div>
+              <p style={styles.payTitle}>Pay via Credit (Udhar)</p>
+              <p style={styles.paySub}>
+                {creditCoversOrder
+                  ? `Available credit: ₹${availableCredit}`
+                  : `This order exceeds your available credit (₹${availableCredit} left)`}
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div style={{ ...styles.payOption, ...styles.payOptionDisabled }}>
+            <div style={styles.radioOuter} />
+            <div>
+              <p style={{ ...styles.payTitle, color: '#aaa' }}>Credit (Udhar)</p>
+              <p style={styles.paySub}>Not enabled for your account yet — contact Modern Dryfruit</p>
+            </div>
+          </div>
+        )}
+
         <div style={{ ...styles.payOption, ...styles.payOptionDisabled }}>
           <div style={styles.radioOuter} />
           <div>
@@ -355,11 +445,13 @@ export default function Checkout() {
       {error && <p style={styles.error}>{error}</p>}
 
       <div style={styles.footer}>
-        <button style={styles.orderBtn} onClick={placeOrder} disabled={placing || checkingPrices}>
-          {checkingPrices ? 'Checking latest prices...' : placing ? 'Placing Order...' : `Place Order — ₹${grandTotal}`}
+        <button style={styles.orderBtn} onClick={placeOrder} disabled={placing || checkingPrices || checkingCredit}>
+          {checkingPrices || checkingCredit ? 'Checking order details...' : placing ? 'Placing Order...' : `Place Order — ₹${grandTotal}`}
         </button>
         <p style={styles.footNote}>
-          You will pay ₹{grandTotal} in cash at the time of delivery.
+          {paymentMethod === 'Credit'
+            ? `₹${grandTotal} will be added to your credit balance.`
+            : `You will pay ₹${grandTotal} in cash at the time of delivery.`}
         </p>
       </div>
     </div>

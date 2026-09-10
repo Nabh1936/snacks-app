@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
 export default function Orders() {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [credit, setCredit] = useState(null);
   const user = (() => {
     try { return JSON.parse(localStorage.getItem('mdUser')); } catch (e) { return null; }
   })();
 
   useEffect(() => {
     fetchOrders();
+    fetchCredit();
   }, [user?.phone]);
 
   const fetchOrders = async () => {
@@ -34,6 +36,25 @@ export default function Orders() {
     }
   };
 
+  const fetchCredit = async () => {
+    try {
+      if (!user?.phone) return;
+      const snap = await getDoc(doc(db, 'retailers', user.phone));
+      if (snap.exists()) {
+        const data = snap.data();
+        if ((data.creditLimit || 0) > 0) {
+          setCredit({
+            limit: data.creditLimit || 0,
+            balance: data.balanceOwed || 0,
+            blocked: !!data.creditBlocked,
+          });
+        }
+      }
+    } catch (error) {
+      // silently skip — this is a nice-to-have, not essential
+    }
+  };
+
   if (loading) {
     return (
       <div style={styles.loading}>
@@ -49,6 +70,22 @@ export default function Orders() {
         <h2 style={styles.headerTitle}>My Orders</h2>
         <div />
       </div>
+
+      {credit && (
+        <div style={styles.creditBanner}>
+          <div style={styles.creditBannerRow}>
+            <span>Credit balance owed</span>
+            <span style={styles.creditBannerAmount}>
+              ₹{credit.balance.toLocaleString('en-IN')} <span style={styles.creditBannerLimit}>/ ₹{credit.limit.toLocaleString('en-IN')} limit</span>
+            </span>
+          </div>
+          {credit.blocked && (
+            <p style={styles.creditBlockedNote}>
+              🔒 Credit is on hold until your balance is fully cleared.
+            </p>
+          )}
+        </div>
+      )}
 
       {orders.length === 0 ? (
         <div style={styles.empty}>
@@ -123,6 +160,19 @@ const styles = {
   },
   backBtn: { background: 'transparent', border: 'none', color: 'white', fontSize: '16px', cursor: 'pointer' },
   headerTitle: { color: 'white', margin: 0, fontSize: '20px' },
+  creditBanner: {
+    margin: '14px 16px 0',
+    padding: '12px 14px',
+    background: '#FDF4F4',
+    border: '1px solid #E8C4C4',
+    borderRadius: '12px',
+    fontSize: '13px',
+    color: '#6E1F21',
+  },
+  creditBannerRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
+  creditBannerAmount: { fontWeight: 'bold', fontSize: '15px' },
+  creditBannerLimit: { fontWeight: 'normal', fontSize: '11px', color: '#999' },
+  creditBlockedNote: { margin: '8px 0 0', fontSize: '12px', color: '#B02D2F', fontWeight: 'bold' },
   empty: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' },
   emptyText: { fontSize: '20px', color: '#999', marginBottom: '20px' },
   shopBtn: { padding: '12px 24px', background: '#B02D2F', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontSize: '16px' },
