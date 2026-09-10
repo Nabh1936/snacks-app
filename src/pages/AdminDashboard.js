@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../firebase';
+import { enableOrderNotifications } from '../notifications';
 
 export default function AdminDashboard() {
   const [orders, setOrders] = useState([]);
@@ -12,6 +13,9 @@ export default function AdminDashboard() {
   const [stockSearch, setStockSearch] = useState('');
   const [confirmClear, setConfirmClear] = useState(false);
   const [clearing, setClearing] = useState(false);
+  const [notifStatus, setNotifStatus] = useState('idle'); // idle | working | on | error
+
+  const user = (() => { try { return JSON.parse(localStorage.getItem('mdUser')); } catch (e) { return null; } })();
 
   useEffect(() => {
     fetchAll();
@@ -33,6 +37,12 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleEnableNotifications = async () => {
+    setNotifStatus('working');
+    const result = await enableOrderNotifications(user?.phone || 'admin');
+    setNotifStatus(result.ok ? 'on' : 'error');
   };
 
   const updateStatus = async (orderId, newStatus) => {
@@ -82,9 +92,6 @@ export default function AdminDashboard() {
     }
   };
 
-  // Date filters now use the reliable numeric createdAt timestamp instead of
-  // re-parsing the human-readable date string. Orders placed before this
-  // field existed won't match Today/This Week (they'll still show under All).
   const isSameDay = (timestamp, ref) => {
     if (!timestamp) return false;
     const d = new Date(timestamp);
@@ -140,6 +147,27 @@ export default function AdminDashboard() {
           window.location.href = '/login';
         }}>Logout</button>
       </div>
+
+      {notifStatus !== 'on' && (
+        <div style={styles.notifBanner}>
+          <div>
+            <p style={styles.notifTitle}>🔔 Get notified instantly when an order arrives</p>
+            <p style={styles.notifSub}>
+              {notifStatus === 'error'
+                ? 'Something went wrong — try again, or check that notifications are allowed for this site in your phone settings.'
+                : 'Turn this on once and your phone will alert you the moment a retailer places an order.'}
+            </p>
+          </div>
+          <button style={styles.notifBtn} onClick={handleEnableNotifications} disabled={notifStatus === 'working'}>
+            {notifStatus === 'working' ? 'Enabling…' : 'Enable Notifications'}
+          </button>
+        </div>
+      )}
+      {notifStatus === 'on' && (
+        <div style={styles.notifBannerOn}>
+          ✅ Order notifications are on for this device
+        </div>
+      )}
 
       <div style={styles.stats}>
         <div style={styles.statCard}>
@@ -364,6 +392,39 @@ const styles = {
   },
   headerLogo: { height: '36px', width: 'auto' },
   logoutBtn: { background: 'transparent', border: '1px solid rgba(255,255,255,0.6)', color: 'white', padding: '6px 12px', borderRadius: '8px', cursor: 'pointer', fontSize: '12px' },
+  notifBanner: {
+    margin: '14px 16px 0',
+    padding: '14px',
+    background: '#FFF9E0',
+    border: '1px solid #F0DE8C',
+    borderRadius: '12px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px',
+  },
+  notifBannerOn: {
+    margin: '14px 16px 0',
+    padding: '12px 14px',
+    background: '#e8f5e9',
+    border: '1px solid #b7e0ba',
+    borderRadius: '12px',
+    color: '#2e7d32',
+    fontSize: '13px',
+    fontWeight: 'bold',
+  },
+  notifTitle: { margin: '0 0 4px', fontSize: '14px', fontWeight: 'bold', color: '#6E1F21' },
+  notifSub: { margin: 0, fontSize: '12px', color: '#8A6D00' },
+  notifBtn: {
+    alignSelf: 'flex-start',
+    padding: '10px 16px',
+    background: '#B02D2F',
+    color: 'white',
+    border: 'none',
+    borderRadius: '8px',
+    fontSize: '13px',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+  },
   stats: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', padding: '16px' },
   statCard: { background: 'white', borderRadius: '12px', padding: '14px', textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' },
   statNumber: { fontSize: '19px', fontWeight: 'bold', color: '#B02D2F', margin: '0 0 4px' },

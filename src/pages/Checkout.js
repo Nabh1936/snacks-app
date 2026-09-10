@@ -43,12 +43,6 @@ export default function Checkout() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Before checkout completes, double-check that cart prices and stock
-  // still match what's actually current — protects against a retailer
-  // checking out on a price that changed, or an item that went out of
-  // stock, after it was added to their cart earlier. Fails open: if the
-  // check can't complete quickly, checkout proceeds with what's in cart
-  // rather than getting stuck.
   const reconcilePrices = async () => {
     setCheckingPrices(true);
     let liveProducts = null;
@@ -117,9 +111,6 @@ export default function Checkout() {
     return `MDF-${yy}${mm}${dd}-${rand}`;
   };
 
-  // Generated once per checkout attempt and reused on retry (network
-  // hiccup, accidental double-tap, page refresh) so a retry overwrites
-  // the same order instead of creating a duplicate.
   const [orderNumber] = useState(() => {
     try {
       const pending = JSON.parse(localStorage.getItem('mdPendingOrder'));
@@ -204,6 +195,17 @@ export default function Checkout() {
       localStorage.setItem('mdLastOrder', JSON.stringify({ ...order, id: orderNumber }));
       localStorage.removeItem('mdCart');
       localStorage.removeItem('mdPendingOrder');
+
+      // Best-effort push notification to the admin's phone. This must never
+      // block or break checkout — if it fails, the order still went through
+      // fine, the admin just won't get a buzz and will see it next time
+      // they open the dashboard.
+      fetch('/api/notify-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderNumber, name: order.name, grandTotal }),
+      }).catch(() => {});
+
       navigate('/order-confirmed');
     } catch (err) {
       console.error('Order error:', err);
