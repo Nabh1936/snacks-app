@@ -1,19 +1,18 @@
 import React, { useState } from 'react';
+import { signInAnonymously } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
+import { auth, db } from '../firebase';
 
 const ADMIN_PHONE = '9820891781';
-
-// Bump this string every time you push a change — this is how you'll
-// confirm your phone actually has the latest version. Just change the
-// text (date, or "v1", "v2"...) each time you push, then check this
-// number on your phone after refreshing.
-const APP_VERSION = 'Updated 25 Aug 2026 - v1';
+const APP_VERSION = 'Updated 3 Sep 2026 - secure login v1';
 
 export default function Login() {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     const cleanedPhone = phone.trim();
     const cleanedName = name.trim();
 
@@ -26,16 +25,35 @@ export default function Login() {
       return;
     }
 
-    const user = { name: cleanedName, phone: cleanedPhone, isAdmin: cleanedPhone === ADMIN_PHONE };
+    setError('');
+    setLoading(true);
+
     try {
+      const cred = await signInAnonymously(auth);
+      const uid = cred.user.uid;
+
+      // Creates this user's own profile doc — Firestore rules only allow
+      // writing your own uid, and never allow setting role to admin from
+      // here, so this can't be used to self-promote.
+      await setDoc(doc(db, 'users', uid), {
+        phone: cleanedPhone,
+        name: cleanedName,
+        role: 'retailer',
+        createdAt: Date.now(),
+      }, { merge: true });
+
+      const user = { name: cleanedName, phone: cleanedPhone, isAdmin: cleanedPhone === ADMIN_PHONE };
       localStorage.setItem('mdUser', JSON.stringify(user));
-    } catch (e) {
-      console.log('localStorage error', e);
-    }
-    if (cleanedPhone === ADMIN_PHONE) {
-      window.location.replace('/admin');
-    } else {
-      window.location.replace('/home');
+
+      if (cleanedPhone === ADMIN_PHONE) {
+        window.location.replace('/admin');
+      } else {
+        window.location.replace('/home');
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+      setError('Could not log in. Please check your connection and try again.');
+      setLoading(false);
     }
   };
 
@@ -62,8 +80,8 @@ export default function Login() {
           onKeyDown={e => e.key === 'Enter' && handleLogin()}
         />
         {error && <p style={styles.error}>{error}</p>}
-        <button style={styles.button} onClick={handleLogin}>
-          Login →
+        <button style={styles.button} onClick={handleLogin} disabled={loading}>
+          {loading ? 'Logging in...' : 'Login →'}
         </button>
         <p style={styles.note}>Contact Modern Dryfruit to get access</p>
         <p style={styles.version}>{APP_VERSION}</p>

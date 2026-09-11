@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { doc, setDoc, getDoc, increment, collection, getDocs } from 'firebase/firestore';
-import { db } from '../firebase';
+import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
+import { db, auth } from '../firebase';
 import bundledProducts from '../data/products.json';
 
 const PRICE_CHECK_TIMEOUT_MS = 5000;
@@ -72,7 +72,6 @@ export default function Checkout() {
         setCreditBalance(0);
       }
     } catch (e) {
-      // No credit info available — safest default is no credit, not unlimited
       setCreditLimit(0);
       setCreditBalance(0);
     } finally {
@@ -80,6 +79,9 @@ export default function Checkout() {
     }
   };
 
+  // This is now just a UI preview — showing sensible numbers/messages
+  // before the retailer submits. The real, trustworthy check happens
+  // server-side in /api/place-order when the order is actually placed.
   const reconcilePrices = async () => {
     setCheckingPrices(true);
     let liveProducts = null;
@@ -160,9 +162,7 @@ export default function Checkout() {
       if (sameCart && stillFresh) {
         return pending.orderNumber;
       }
-    } catch (e) {
-      // ignore bad storage, fall through to a fresh number
-    }
+    } catch (e) {}
     const fresh = makeOrderNumber();
     try {
       localStorage.setItem('mdPendingOrder', JSON.stringify({
@@ -202,61 +202,48 @@ export default function Checkout() {
       setError('Please enter a valid 6 digit pincode.');
       return;
     }
-    if (paymentMethod === 'Credit' && !creditCoversOrder) {
-      setError(`This order (₹${grandTotal}) exceeds your available credit (₹${availableCredit}). Please choose Cash on Delivery or reduce the order.`);
+    if (!auth.currentUser) {
+      setError('Your session has expired. Please go back and log in again.');
       return;
     }
 
     setPlacing(true);
 
-    const delivery = {
-      shopName: shopName.trim(),
-      contactPhone: contactPhone.trim(),
-      address: address.trim(),
-      city: city.trim(),
-      pincode: pincode.trim(),
-    };
-
-    const order = {
-      orderNumber,
-      name: user?.name || delivery.shopName,
-      phone: user?.phone || delivery.contactPhone,
-      delivery,
-      notes: notes.trim(),
-      items: cart,
-      subtotal,
-      gst: totalGst,
-      grandTotal,
-      paymentMethod: paymentMethod === 'Credit' ? 'Credit (Udhar)' : 'Cash on Delivery',
-      paymentStatus: 'Unpaid',
-      status: 'Pending',
-      date: new Date().toLocaleString(),
-      createdAt: Date.now(),
-    };
-
     try {
-      await setDoc(doc(db, 'orders', orderNumber), order);
+      const idToken = await auth.currentUser.getIdToken();
+      const delivery = {
+        shopName: shopName.trim(),
+        contactPhone: contactPhone.trim(),
+        address: address.trim(),
+        city: city.trim(),
+        pincode: pincode.trim(),
+      };
 
-      if (paymentMethod === 'Credit') {
-        const phone = user?.phone || delivery.contactPhone;
-        await setDoc(doc(db, 'retailers', phone), {
-          phone,
-          name: order.name,
-          balanceOwed: increment(grandTotal),
-          updatedAt: Date.now(),
-        }, { merge: true });
+      const response = await fetch('/api/place-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          idToken,
+          items: cart.map(c => ({ id: c.id, qty: c.qty, name: c.name })),
+          delivery,
+          notes: notes.trim(),
+          paymentMethod,
+          orderNumber,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        setError(result.error || 'Could not place the order. Please try again.');
+        setPlacing(false);
+        return;
       }
 
       localStorage.setItem('mdDelivery', JSON.stringify(delivery));
-      localStorage.setItem('mdLastOrder', JSON.stringify({ ...order, id: orderNumber }));
+      localStorage.setItem('mdLastOrder', JSON.stringify({ ...result.order, id: result.order.orderNumber }));
       localStorage.removeItem('mdCart');
       localStorage.removeItem('mdPendingOrder');
-
-      fetch('/api/notify-order', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orderNumber, name: order.name, grandTotal }),
-      }).catch(() => {});
 
       navigate('/order-confirmed');
     } catch (err) {
