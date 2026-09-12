@@ -1,8 +1,11 @@
-const admin = require('firebase-admin');
+const { initializeApp, getApps, cert } = require('firebase-admin/app');
+const { getFirestore, FieldValue } = require('firebase-admin/firestore');
+const { getAuth } = require('firebase-admin/auth');
+const { getMessaging } = require('firebase-admin/messaging');
 
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert({
+if (!getApps().length) {
+  initializeApp({
+    credential: cert({
       projectId: process.env.FIREBASE_PROJECT_ID,
       clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
       privateKey: (process.env.FIREBASE_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
@@ -37,19 +40,15 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'Delivery details are incomplete.' });
     }
 
-    // Verify the session is real — this is what stops someone from calling
-    // this endpoint directly without ever going through the app's login.
     let decoded;
     try {
-      decoded = await admin.auth().verifyIdToken(idToken);
+      decoded = await getAuth().verifyIdToken(idToken);
     } catch (e) {
       return res.status(401).json({ error: 'Your session has expired. Please refresh and log in again.' });
     }
 
-    const firestore = admin.firestore();
+    const firestore = getFirestore();
 
-    // Look up the phone number tied to this verified session — never
-    // trust a phone number sent from the browser for this purpose.
     const userDoc = await firestore.collection('users').doc(decoded.uid).get();
     if (!userDoc.exists) {
       return res.status(400).json({ error: 'Account not set up. Please log in again from the login page.' });
@@ -61,9 +60,6 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'No phone number on this account. Please log in again.' });
     }
 
-    // Re-fetch every product's REAL current price/stock server-side.
-    // The browser's cart is only used to know which product ids and
-    // quantities were requested — never trusted for price or stock.
     const productsSnap = await firestore.collection('products').get();
     const byId = {};
     productsSnap.forEach(doc => {
@@ -103,8 +99,6 @@ module.exports = async (req, res) => {
 
     const grandTotal = subtotal + gst;
 
-    // If paying on credit, check their real limit and balance server-side —
-    // never trust what the browser claims is "available".
     let finalPaymentMethod = 'Cash on Delivery';
     if (paymentMethod === 'Credit') {
       const retailerDoc = await firestore.collection('retailers').doc(phone).get();
@@ -146,20 +140,17 @@ module.exports = async (req, res) => {
       createdAt: Date.now(),
     };
 
-    // setDoc-by-orderNumber (not add) — a retry with the same order number
-    // overwrites the same order instead of creating a duplicate.
     await firestore.collection('orders').doc(orderNumber).set(order);
 
     if (finalPaymentMethod.startsWith('Credit')) {
       await firestore.collection('retailers').doc(phone).set({
         phone,
         name,
-        balanceOwed: admin.firestore.FieldValue.increment(grandTotal),
+        balanceOwed: FieldValue.increment(grandTotal),
         updatedAt: Date.now(),
       }, { merge: true });
     }
 
-    // Best-effort notification — never block the order on this.
     try {
       const tokensSnap = await firestore.collection('adminTokens').get();
       const title = 'New Order Received';
@@ -167,7 +158,7 @@ module.exports = async (req, res) => {
       for (const tokenDoc of tokensSnap.docs) {
         const token = tokenDoc.data().token;
         if (!token) continue;
-        admin.messaging().send({
+        getMessaging().send({
           token,
           notification: { title, body },
           webpush: { fcmOptions: { link: '/admin' } },

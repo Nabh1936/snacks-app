@@ -1,8 +1,10 @@
-const admin = require('firebase-admin');
+const { initializeApp, getApps, cert } = require('firebase-admin/app');
+const { getFirestore } = require('firebase-admin/firestore');
+const { getMessaging } = require('firebase-admin/messaging');
 
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert({
+if (!getApps().length) {
+  initializeApp({
+    credential: cert({
       projectId: process.env.FIREBASE_PROJECT_ID,
       clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
       privateKey: (process.env.FIREBASE_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
@@ -17,7 +19,7 @@ module.exports = async (req, res) => {
 
   try {
     const { orderNumber, name, grandTotal } = req.body || {};
-    const firestore = admin.firestore();
+    const firestore = getFirestore();
     const snap = await firestore.collection('adminTokens').get();
 
     if (snap.empty) {
@@ -32,7 +34,7 @@ module.exports = async (req, res) => {
       const token = docSnap.data().token;
       if (!token) continue;
       try {
-        await admin.messaging().send({
+        await getMessaging().send({
           token,
           notification: { title, body },
           webpush: { fcmOptions: { link: '/admin' } },
