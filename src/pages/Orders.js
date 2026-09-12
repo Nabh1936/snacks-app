@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import { db, auth } from '../firebase';
 
 export default function Orders() {
   const navigate = useNavigate();
@@ -13,15 +14,27 @@ export default function Orders() {
   })();
 
   useEffect(() => {
-    fetchOrders();
+    // Orders are now looked up by the signed-in Firebase uid, not the phone
+    // number in localStorage — that's what the Firestore rules check too,
+    // so this has to wait for the real auth state rather than assuming
+    // auth.currentUser is already populated on first render.
+    const unsubscribe = onAuthStateChanged(auth, (fbUser) => {
+      fetchOrders(fbUser?.uid);
+    });
     fetchCredit();
-  }, [user?.phone]);
+    return () => unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const fetchOrders = async () => {
+  const fetchOrders = async (uid) => {
     try {
+      if (!uid) {
+        setOrders([]);
+        return;
+      }
       const q = query(
         collection(db, 'orders'),
-        where('phone', '==', user?.phone)
+        where('uid', '==', uid)
       );
       const snapshot = await getDocs(q);
       const orderList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));

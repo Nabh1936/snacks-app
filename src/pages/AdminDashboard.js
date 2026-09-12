@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs, doc, updateDoc, deleteDoc, setDoc, increment } from 'firebase/firestore';
-import { db } from '../firebase';
+import { collection, getDocs, doc, getDoc, updateDoc, deleteDoc, setDoc, increment } from 'firebase/firestore';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { db, auth } from '../firebase';
 import { enableOrderNotifications } from '../notifications';
 
 export default function AdminDashboard() {
@@ -8,6 +9,7 @@ export default function AdminDashboard() {
   const [products, setProducts] = useState([]);
   const [retailers, setRetailers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [checkingAccess, setCheckingAccess] = useState(true);
   const [tab, setTab] = useState('orders');
   const [searchPhone, setSearchPhone] = useState('');
   const [dateFilter, setDateFilter] = useState('all');
@@ -24,8 +26,33 @@ export default function AdminDashboard() {
 
   const user = (() => { try { return JSON.parse(localStorage.getItem('mdUser')); } catch (e) { return null; } })();
 
+  // Real access gate: being signed in isn't enough — this checks that the
+  // signed-in Firebase account's users/{uid} doc actually has role 'admin'.
+  // That doc can only be set by hand in Firebase Console (client code is
+  // blocked by the Firestore rules from ever setting role to 'admin'), so
+  // this can't be bypassed by editing localStorage in the browser console.
   useEffect(() => {
-    fetchAll();
+    const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
+      if (!fbUser) {
+        window.location.replace('/admin-login');
+        return;
+      }
+      try {
+        const snap = await getDoc(doc(db, 'users', fbUser.uid));
+        if (snap.exists() && snap.data().role === 'admin') {
+          setCheckingAccess(false);
+          fetchAll();
+        } else {
+          await signOut(auth);
+          window.location.replace('/admin-login');
+        }
+      } catch (error) {
+        console.error('Access check failed:', error);
+        window.location.replace('/admin-login');
+      }
+    });
+    return () => unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchAll = async () => {
@@ -231,6 +258,14 @@ export default function AdminDashboard() {
   const totalCreditOutstanding = retailers.reduce((sum, r) => sum + (r.balanceOwed || 0), 0);
   const outOfStockCount = products.filter(p => !p.stock).length;
 
+  if (checkingAccess) {
+    return (
+      <div style={styles.loading}>
+        <p>Checking access...</p>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div style={styles.loading}>
@@ -243,9 +278,10 @@ export default function AdminDashboard() {
     <div style={styles.container}>
       <div style={styles.header}>
         <img src="/logo-header.png" alt="MDF HealthPlus" style={styles.headerLogo} />
-        <button style={styles.logoutBtn} onClick={() => {
+        <button style={styles.logoutBtn} onClick={async () => {
           localStorage.removeItem('mdUser');
-          window.location.href = '/login';
+          try { await signOut(auth); } catch (e) {}
+          window.location.href = '/admin-login';
         }}>Logout</button>
       </div>
 

@@ -121,6 +121,7 @@ export default async function handler(req, res) {
       orderNumber,
       name,
       phone,
+      uid: decoded.uid,
       delivery: {
         shopName: String(delivery.shopName).trim(),
         contactPhone: String(delivery.contactPhone || phone).trim(),

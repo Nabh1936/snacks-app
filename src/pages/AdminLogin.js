@@ -1,53 +1,53 @@
 import React, { useState } from 'react';
-import { signInAnonymously } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 
-const APP_VERSION = 'Updated 12 Sep 2026 - admin auth v1';
-
-export default function Login() {
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
+export default function AdminLogin() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
-    const cleanedPhone = phone.trim();
-    const cleanedName = name.trim();
-
-    if (cleanedName.length < 2) {
-      setError('Please enter your name or shop name');
+    if (!email.trim() || !password) {
+      setError('Please enter both email and password.');
       return;
     }
-    if (cleanedPhone.length !== 10 || isNaN(cleanedPhone)) {
-      setError('Please enter a valid 10 digit phone number');
-      return;
-    }
-
     setError('');
     setLoading(true);
 
     try {
-      const cred = await signInAnonymously(auth);
+      const cred = await signInWithEmailAndPassword(auth, email.trim(), password);
       const uid = cred.user.uid;
 
-      // Creates this user's own profile doc — Firestore rules only allow
-      // writing your own uid, and never allow setting role to admin from
-      // here, so this can't be used to self-promote.
-      await setDoc(doc(db, 'users', uid), {
-        phone: cleanedPhone,
-        name: cleanedName,
-        role: 'retailer',
-        createdAt: Date.now(),
-      }, { merge: true });
+      // The email/password only proves who they are — this check is what
+      // proves they're actually allowed to be here. Anyone can sign up for
+      // an account elsewhere; only a users/{uid} doc with role 'admin'
+      // (set by hand in Firebase Console, never by client code) gets in.
+      const snap = await getDoc(doc(db, 'users', uid));
+      if (!snap.exists() || snap.data().role !== 'admin') {
+        await signOut(auth);
+        setError('This account is not set up as an admin account.');
+        setLoading(false);
+        return;
+      }
 
-      const user = { name: cleanedName, phone: cleanedPhone, isAdmin: false };
-      localStorage.setItem('mdUser', JSON.stringify(user));
+      const data = snap.data();
+      localStorage.setItem('mdUser', JSON.stringify({
+        name: data.name || 'Admin',
+        phone: data.phone || '',
+        isAdmin: true,
+      }));
 
-      window.location.replace('/home');
+      window.location.replace('/admin');
     } catch (err) {
-      console.error('Login error:', err);
-      setError('Could not log in. Please check your connection and try again.');
+      console.error('Admin login error:', err);
+      if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
+        setError('Incorrect email or password.');
+      } else {
+        setError('Could not log in. Please check your connection and try again.');
+      }
       setLoading(false);
     }
   };
@@ -56,31 +56,31 @@ export default function Login() {
     <div style={styles.container}>
       <div style={styles.card}>
         <img src="/logo-header.png" alt="MDF HealthPlus" style={styles.logo} />
-        <p style={styles.subtitle}>Wholesale Ordering App</p>
+        <p style={styles.subtitle}>Admin Login</p>
         <input
           style={styles.input}
-          type="text"
-          placeholder="Your name or shop name"
-          value={name}
-          onChange={e => setName(e.target.value)}
+          type="email"
+          placeholder="Admin email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          autoCapitalize="none"
+          onKeyDown={e => e.key === 'Enter' && handleLogin()}
         />
         <input
           style={styles.input}
-          type="tel"
-          inputMode="numeric"
-          pattern="[0-9]*"
-          placeholder="Enter 10 digit phone number"
-          value={phone}
-          onChange={e => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && handleLogin()}
         />
         {error && <p style={styles.error}>{error}</p>}
         <button style={styles.button} onClick={handleLogin} disabled={loading}>
           {loading ? 'Logging in...' : 'Login →'}
         </button>
-        <p style={styles.note}>Contact Modern Dryfruit to get access</p>
-        <p style={styles.adminLink}><a href="/admin-login" style={styles.link}>Admin? Login here</a></p>
-        <p style={styles.version}>{APP_VERSION}</p>
+        <p style={styles.note}>
+          <a href="/login" style={styles.link}>Retailer? Login here</a>
+        </p>
       </div>
     </div>
   );
@@ -132,7 +132,5 @@ const styles = {
   },
   error: { color: '#B02D2F', fontSize: '13px', marginBottom: '10px' },
   note: { color: '#999', fontSize: '12px' },
-  adminLink: { color: '#999', fontSize: '12px', marginTop: '10px' },
   link: { color: '#B02D2F', fontWeight: 'bold', textDecoration: 'none' },
-  version: { color: '#ccc', fontSize: '10px', marginTop: '14px' },
 };
