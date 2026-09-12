@@ -1,6 +1,5 @@
 const { initializeApp, getApps, cert } = require('firebase-admin/app');
 const { getFirestore, FieldValue } = require('firebase-admin/firestore');
-const { getAuth } = require('firebase-admin/auth');
 const { getMessaging } = require('firebase-admin/messaging');
 
 if (!getApps().length) {
@@ -39,6 +38,8 @@ module.exports = async (req, res) => {
     if (!delivery || !delivery.shopName || !delivery.address || !delivery.city || !delivery.pincode) {
       return res.status(400).json({ error: 'Delivery details are incomplete.' });
     }
+
+    const { getAuth } = await import('firebase-admin/auth');
 
     let decoded;
     try {
