@@ -1,6 +1,7 @@
-const { initializeApp, getApps, cert } = require('firebase-admin/app');
-const { getFirestore, FieldValue } = require('firebase-admin/firestore');
-const { getMessaging } = require('firebase-admin/messaging');
+import { initializeApp, getApps, cert } from 'firebase-admin/app';
+import { getFirestore, FieldValue } from 'firebase-admin/firestore';
+import { getAuth } from 'firebase-admin/auth';
+import { getMessaging } from 'firebase-admin/messaging';
 
 if (!getApps().length) {
   initializeApp({
@@ -21,7 +22,7 @@ function makeOrderNumber() {
   return `MDF-${yy}${mm}${dd}-${rand}`;
 }
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -38,8 +39,6 @@ module.exports = async (req, res) => {
     if (!delivery || !delivery.shopName || !delivery.address || !delivery.city || !delivery.pincode) {
       return res.status(400).json({ error: 'Delivery details are incomplete.' });
     }
-
-    const { getAuth } = await import('firebase-admin/auth');
 
     let decoded;
     try {
@@ -178,4 +177,4 @@ module.exports = async (req, res) => {
     console.error('place-order error:', error);
     res.status(500).json({ error: 'Something went wrong placing your order. Please try again.' });
   }
-};
+}
