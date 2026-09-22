@@ -402,14 +402,6 @@ export default function Checkout() {
             </div>
           </div>
         )}
-
-        <div style={{ ...styles.payOption, ...styles.payOptionDisabled }}>
-          <div style={styles.radioOuter} />
-          <div>
-            <p style={{ ...styles.payTitle, color: '#aaa' }}>UPI / Online Payment</p>
-            <p style={styles.paySub}>Coming soon</p>
-          </div>
-        </div>
       </div>
 
       <div style={styles.section}>
