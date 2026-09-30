@@ -3,6 +3,7 @@ import { collection, getDocs, doc, getDoc, updateDoc, deleteDoc, setDoc, increme
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { db, auth } from '../firebase';
 import { enableOrderNotifications } from '../notifications';
+import { normalizePacking } from '../packing';
 
 export default function AdminDashboard() {
   const [orders, setOrders] = useState([]);
@@ -23,6 +24,10 @@ export default function AdminDashboard() {
   const [newCreditLimit, setNewCreditLimit] = useState('');
   const [savingCredit, setSavingCredit] = useState(false);
   const [editingLimits, setEditingLimits] = useState({});
+  const [packingCfg, setPackingCfg] = useState(normalizePacking(null));
+  const [packingSearch, setPackingSearch] = useState('');
+  const [savingPacking, setSavingPacking] = useState(false);
+  const [packingMsg, setPackingMsg] = useState('');
 
   const user = (() => { try { return JSON.parse(localStorage.getItem('mdUser')); } catch (e) { return null; } })();
 
@@ -71,6 +76,13 @@ export default function AdminDashboard() {
       const retailerList = retailerSnap.docs.map(d => ({ id: d.id, ...d.data() }));
       retailerList.sort((a, b) => (b.balanceOwed || 0) - (a.balanceOwed || 0));
       setRetailers(retailerList);
+
+      try {
+        const packSnap = await getDoc(doc(db, 'settings', 'packing'));
+        setPackingCfg(normalizePacking(packSnap.exists() ? packSnap.data() : null));
+      } catch (e) {
+        console.warn('Packing settings not loaded:', e.message);
+      }
     } catch (error) {
       console.error('Error:', error);
     } finally {
@@ -146,6 +158,33 @@ export default function AdminDashboard() {
       ));
     } catch (error) {
       console.error('Error updating stock:', error);
+    }
+  };
+
+  const togglePackingEligible = async (product) => {
+    const next = !product.packingEligible;
+    try {
+      await updateDoc(doc(db, 'products', product.firebaseId), { packingEligible: next });
+      setProducts(products.map(p =>
+        p.firebaseId === product.firebaseId ? { ...p, packingEligible: next } : p
+      ));
+    } catch (error) {
+      console.error('Error updating packing:', error);
+    }
+  };
+
+  const savePackingSettings = async () => {
+    setSavingPacking(true);
+    setPackingMsg('');
+    try {
+      const clean = normalizePacking(packingCfg);
+      await setDoc(doc(db, 'settings', 'packing'), { ...clean, updatedAt: Date.now() });
+      setPackingCfg(clean);
+      setPackingMsg('Saved ✓');
+    } catch (error) {
+      setPackingMsg('Could not save — check Firestore rules');
+    } finally {
+      setSavingPacking(false);
     }
   };
 
@@ -348,6 +387,12 @@ export default function AdminDashboard() {
         >
           💳 Credit
         </button>
+        <button
+          style={{ ...styles.tabBtn, ...(tab === 'packing' ? styles.tabBtnActive : {}) }}
+          onClick={() => setTab('packing')}
+        >
+          🎁 Packing
+        </button>
       </div>
 
       {tab === 'orders' && (
@@ -440,8 +485,11 @@ export default function AdminDashboard() {
 
                   {order.items?.map((item, i) => (
                     <div key={i} style={styles.orderItem}>
-                      <span>{item.name} x{item.qty}</span>
-                      <span>₹{item.price * item.qty}</span>
+                      <span>
+                        {item.name} x{item.qty}
+                        {item.packing && <strong style={{ color: '#6E1F21' }}> · 📦 {item.packing.label}</strong>}
+                      </span>
+                      <span>₹{item.price * item.qty + (item.packing?.total || 0)}</span>
                     </div>
                   ))}
 
@@ -522,6 +570,89 @@ export default function AdminDashboard() {
               </button>
             </div>
           ))}
+        </div>
+      )}
+
+      {tab === 'packing' && (
+        <div style={styles.section}>
+          <div style={styles.stockRow}>
+            <div style={{ width: '100%' }}>
+              <p style={styles.stockName}>Packing charges</p>
+              {packingCfg.options.map((opt, i) => (
+                <div key={opt.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '8px 0' }}>
+                  <span style={{ flex: 1, fontSize: '14px' }}>{opt.label}</span>
+                  <span>₹</span>
+                  <input
+                    style={{ width: '90px', padding: '8px', border: '1px solid #ddd', borderRadius: '8px', fontSize: '14px' }}
+                    type="number"
+                    min="0"
+                    value={opt.charge}
+                    onChange={e => {
+                      const options = packingCfg.options.map((o, j) => j === i ? { ...o, charge: e.target.value } : o);
+                      setPackingCfg({ ...packingCfg, options });
+                    }}
+                  />
+                </div>
+              ))}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '12px 0 8px', fontSize: '14px' }}>
+                <span style={{ flex: 1 }}>Charge applies</span>
+                <select
+                  style={{ padding: '8px', borderRadius: '8px', border: '1px solid #ddd' }}
+                  value={packingCfg.chargeMode}
+                  onChange={e => setPackingCfg({ ...packingCfg, chargeMode: e.target.value })}
+                >
+                  <option value="perPiece">Per piece</option>
+                  <option value="perLine">Once per item line</option>
+                </select>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '8px 0', fontSize: '14px' }}>
+                <span style={{ flex: 1 }}>GST on packing (%)</span>
+                <input
+                  style={{ width: '90px', padding: '8px', border: '1px solid #ddd', borderRadius: '8px', fontSize: '14px' }}
+                  type="number"
+                  min="0"
+                  value={packingCfg.gstRate}
+                  onChange={e => setPackingCfg({ ...packingCfg, gstRate: e.target.value })}
+                />
+              </div>
+              <button style={{ ...styles.dispatchBtn, width: '100%', marginTop: '8px' }} onClick={savePackingSettings} disabled={savingPacking}>
+                {savingPacking ? 'Saving…' : 'Save packing charges'}
+              </button>
+              {packingMsg && <p style={{ fontSize: '13px', margin: '8px 0 0', color: '#6E1F21' }}>{packingMsg}</p>}
+            </div>
+          </div>
+
+          <p style={{ ...styles.stockName, margin: '18px 0 8px' }}>Which products offer packing choice?</p>
+          <input
+            style={styles.searchInput}
+            type="text"
+            placeholder="Search product name or category..."
+            value={packingSearch}
+            onChange={e => setPackingSearch(e.target.value)}
+          />
+          <p style={styles.resultCount}>
+            {products.filter(p => p.packingEligible).length} product(s) offer packing choice
+          </p>
+          {products
+            .filter(p => `${p.name} ${p.category}`.toLowerCase().includes(packingSearch.toLowerCase()))
+            .map(product => (
+              <div key={product.firebaseId} style={styles.stockRow}>
+                <div style={styles.stockInfo}>
+                  <p style={styles.stockName}>{product.name}</p>
+                  <p style={styles.stockMeta}>{product.category}</p>
+                </div>
+                <button
+                  style={{
+                    ...styles.stockToggle,
+                    background: product.packingEligible ? '#e8f5e9' : '#f0f0f0',
+                    color: product.packingEligible ? '#2e7d32' : '#777',
+                  }}
+                  onClick={() => togglePackingEligible(product)}
+                >
+                  {product.packingEligible ? 'Packing: On' : 'Packing: Off'}
+                </button>
+              </div>
+            ))}
         </div>
       )}
 

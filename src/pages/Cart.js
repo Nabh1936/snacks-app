@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { fetchPacking, getCachedPacking, lineKey, linePackingCharge, cartTotals } from '../packing';
 
 function ItemImage({ item }) {
   const [failed, setFailed] = useState(false);
@@ -20,20 +21,17 @@ function ItemImage({ item }) {
 export default function Cart() {
   const [cart, setCart] = useState(JSON.parse(localStorage.getItem('mdCart')) || []);
   const navigate = useNavigate();
+  const [packing, setPacking] = useState(getCachedPacking);
+  useEffect(() => { fetchPacking().then(setPacking); }, []);
 
-  const updateQty = (id, delta) => {
-    let newCart = cart.map(c => c.id === id ? { ...c, qty: c.qty + delta } : c)
+  const updateQty = (key, delta) => {
+    let newCart = cart.map(c => lineKey(c) === key ? { ...c, qty: c.qty + delta } : c)
       .filter(c => c.qty > 0);
     setCart(newCart);
     localStorage.setItem('mdCart', JSON.stringify(newCart));
   };
 
-  const subtotal = cart.reduce((sum, c) => sum + c.price * c.qty, 0);
-  const totalGst = cart.reduce((sum, c) => {
-    const gstRate = c.gst || 0;
-    return sum + Math.round(c.price * c.qty * gstRate / 100);
-  }, 0);
-  const grandTotal = subtotal + totalGst;
+  const { subtotal, packingTotal, gst: totalGst, grandTotal } = cartTotals(cart, packing);
 
   return (
     <div style={styles.container}>
@@ -54,19 +52,24 @@ export default function Cart() {
         <div>
           <div style={styles.items}>
             {cart.map(item => (
-              <div key={item.id} style={styles.cartItem}>
+              <div key={lineKey(item)} style={styles.cartItem}>
                 <ItemImage item={item} />
                 <div style={styles.itemInfo}>
                   <p style={styles.itemName}>{item.name}</p>
                   <p style={styles.itemPrice}>₹{item.price}/{item.unit}</p>
+                  {item.packing && (
+                    <p style={styles.packing}>
+                      📦 {item.packing.label}{linePackingCharge(item, packing) > 0 ? ` +₹${linePackingCharge(item, packing)}` : ''}
+                    </p>
+                  )}
                   {item.gst === 0 && <span style={styles.gstFree}>GST Free</span>}
                 </div>
                 <div style={styles.qtyControl}>
-                  <button style={styles.qtyBtn} onClick={() => updateQty(item.id, -1)}>−</button>
+                  <button style={styles.qtyBtn} onClick={() => updateQty(lineKey(item), -1)}>−</button>
                   <span style={styles.qty}>{item.qty}</span>
-                  <button style={styles.qtyBtn} onClick={() => updateQty(item.id, 1)}>+</button>
+                  <button style={styles.qtyBtn} onClick={() => updateQty(lineKey(item), 1)}>+</button>
                 </div>
-                <p style={styles.itemTotal}>₹{item.price * item.qty}</p>
+                <p style={styles.itemTotal}>₹{item.price * item.qty + linePackingCharge(item, packing)}</p>
               </div>
             ))}
           </div>
@@ -77,6 +80,12 @@ export default function Cart() {
               <span>Subtotal</span>
               <span>₹{subtotal}</span>
             </div>
+            {packingTotal > 0 && (
+              <div style={styles.billRow}>
+                <span>Packing charges</span>
+                <span>₹{packingTotal}</span>
+              </div>
+            )}
             <div style={styles.billRow}>
               <span>GST</span>
               <span>₹{totalGst}</span>
@@ -120,6 +129,7 @@ const styles = {
   itemInfo: { flex: 1 },
   itemName: { margin: '0 0 4px', fontWeight: 'bold', fontSize: '14px' },
   itemPrice: { margin: 0, color: '#999', fontSize: '12px' },
+  packing: { margin: '4px 0 0', color: '#6E1F21', fontSize: '12px', fontWeight: 'bold' },
   gstFree: { fontSize: '10px', color: '#2e7d32', background: '#e8f5e9', padding: '2px 6px', borderRadius: '8px' },
   qtyControl: { display: 'flex', alignItems: 'center', gap: '12px' },
   qtyBtn: { width: '30px', height: '30px', borderRadius: '50%', border: 'none', background: '#B02D2F', color: 'white', fontSize: '18px', cursor: 'pointer' },

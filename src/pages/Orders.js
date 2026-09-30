@@ -3,12 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import { db, auth } from '../firebase';
+import ReorderModal from '../components/ReorderModal';
 
 export default function Orders() {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [credit, setCredit] = useState(null);
+  const [reorderOrder, setReorderOrder] = useState(null);
   const user = (() => {
     try { return JSON.parse(localStorage.getItem('mdUser')); } catch (e) { return null; }
   })();
@@ -125,8 +127,11 @@ export default function Orders() {
 
               {order.items?.map((item, i) => (
                 <div key={i} style={styles.orderItem}>
-                  <span>{item.name} x{item.qty}</span>
-                  <span>₹{item.price * item.qty}</span>
+                  <span>
+                    {item.name} x{item.qty}
+                    {item.packing && <span style={styles.packingTag}> · 📦 {item.packing.label}</span>}
+                  </span>
+                  <span>₹{item.price * item.qty + (item.packing?.total || 0)}</span>
                 </div>
               ))}
 
@@ -153,10 +158,16 @@ export default function Orders() {
                   📍 {order.delivery.address}, {order.delivery.city} - {order.delivery.pincode}
                 </p>
               )}
+
+              <button style={styles.reorderBtn} onClick={() => setReorderOrder(order)}>
+                🔁 Reorder
+              </button>
             </div>
           ))}
         </div>
       )}
+
+      {reorderOrder && <ReorderModal order={reorderOrder} onClose={() => setReorderOrder(null)} />}
     </div>
   );
 }
@@ -200,5 +211,7 @@ const styles = {
   payRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' },
   payLabel: { fontSize: '13px', color: '#666' },
   payBadge: { padding: '3px 9px', borderRadius: '20px', fontSize: '11px', fontWeight: 'bold' },
+  packingTag: { fontSize: '12px', color: '#6E1F21' },
+  reorderBtn: { width: '100%', marginTop: '12px', padding: '12px', border: 'none', borderRadius: '10px', background: '#FFF112', color: '#6E1F21', fontWeight: 'bold', fontSize: '15px', cursor: 'pointer' },
   address: { fontSize: '12px', color: '#888', marginTop: '10px', lineHeight: '1.45' },
 };

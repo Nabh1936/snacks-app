@@ -67,8 +67,19 @@ export default async function handler(req, res) {
       byId[data.id] = data;
     });
 
+    const packingSnap = await firestore.collection('settings').doc('packing').get();
+    const packingCfg = packingSnap.exists ? packingSnap.data() : {};
+    const packingOptions = Array.isArray(packingCfg.options) ? packingCfg.options : [
+      { id: 'tray', label: 'Tray packing', charge: 0 },
+      { id: 'aluminium', label: 'Aluminium packing', charge: 0 },
+      { id: 'inhouse', label: 'In-house packing', charge: 0 },
+    ];
+    const packingPerLine = packingCfg.chargeMode === 'perLine';
+    const packingGstRate = Number(packingCfg.gstRate) || 0;
+
     let subtotal = 0;
     let gst = 0;
+    let packingTotal = 0;
     const finalItems = [];
     const removedItems = [];
 
@@ -79,11 +90,26 @@ export default async function handler(req, res) {
         removedItems.push(requested.name || `item ${requested.id}`);
         continue;
       }
+      let packing = null;
+      let linePacking = 0;
+      if (requested.packingId) {
+        const opt = packingOptions.find(o => String(o.id) === String(requested.packingId));
+        if (!opt || live.packingEligible !== true) {
+          removedItems.push(`${requested.name || live.name} (packing no longer available)`);
+          continue;
+        }
+        const charge = Number(opt.charge) || 0;
+        linePacking = packingPerLine ? charge : charge * qty;
+        packing = { id: String(opt.id), label: String(opt.label), charge, total: linePacking };
+      }
       const lineSubtotal = live.price * qty;
-      const lineGst = Math.round(lineSubtotal * (live.gst || 0) / 100);
+      const lineGst = Math.round(lineSubtotal * (live.gst || 0) / 100)
+        + Math.round(linePacking * packingGstRate / 100);
       subtotal += lineSubtotal;
+      packingTotal += linePacking;
       gst += lineGst;
       finalItems.push({
+        packing,
         id: live.id,
         name: live.name,
         price: live.price,
@@ -97,7 +123,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'None of the items in your cart are currently available.' });
     }
 
-    const grandTotal = subtotal + gst;
+    const grandTotal = subtotal + packingTotal + gst;
 
     let finalPaymentMethod = 'Cash on Delivery';
     if (paymentMethod === 'Credit') {
@@ -132,6 +158,7 @@ export default async function handler(req, res) {
       notes: notes ? String(notes).trim() : '',
       items: finalItems,
       subtotal,
+      packingTotal,
       gst,
       grandTotal,
       paymentMethod: finalPaymentMethod,

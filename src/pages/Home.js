@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../firebase';
+import { collection, getDocs, doc, getDoc, setDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
+import { db, auth } from '../firebase';
+import PackingModal from '../components/PackingModal';
+import { fetchPacking, getCachedPacking, lineKey } from '../packing';
 import bundledProducts from '../data/products.json';
 
 const OVERLAY_KEY = 'mdProductOverlay';
@@ -45,6 +48,42 @@ export default function Home() {
   const [cart, setCart] = useState(JSON.parse(localStorage.getItem('mdCart')) || []);
   const [toast, setToast] = useState('');
   const [syncing, setSyncing] = useState(false);
+  const [packing, setPacking] = useState(getCachedPacking);
+  const [packingFor, setPackingFor] = useState(null);
+  const [uid, setUid] = useState(null);
+  const [favourites, setFavourites] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('mdFavourites')) || []; } catch (e) { return []; }
+  });
+
+  useEffect(() => {
+    fetchPacking().then(setPacking);
+    const unsub = onAuthStateChanged(auth, async (fbUser) => {
+      setUid(fbUser?.uid || null);
+      if (!fbUser) return;
+      try {
+        const snap = await getDoc(doc(db, 'users', fbUser.uid));
+        const favs = (snap.exists() && Array.isArray(snap.data().favourites)) ? snap.data().favourites : [];
+        setFavourites(favs);
+        localStorage.setItem('mdFavourites', JSON.stringify(favs));
+      } catch (e) {}
+    });
+    return () => unsub();
+  }, []);
+
+  const toggleFavourite = async (product) => {
+    const isFav = favourites.includes(product.id);
+    const next = isFav ? favourites.filter(f => f !== product.id) : [...favourites, product.id];
+    setFavourites(next);
+    localStorage.setItem('mdFavourites', JSON.stringify(next));
+    if (!uid) return;
+    try {
+      await setDoc(doc(db, 'users', uid), {
+        favourites: isFav ? arrayRemove(product.id) : arrayUnion(product.id),
+      }, { merge: true });
+    } catch (e) {
+      console.warn('Could not save favourite:', e.message);
+    }
+  };
 
   useEffect(() => {
     let stale = true;
@@ -97,22 +136,31 @@ export default function Home() {
     }
   };
 
-  const categories = ['All', ...new Set(products.map(p => p.category))].sort();
+  const categories = ['All', ...[...new Set(products.map(p => p.category))].sort()];
 
   const filtered = products.filter(p => {
     const matchSearch = String(p.name).toLowerCase().includes(search.toLowerCase());
-    const matchCategory = category === 'All' || p.category === category;
+    const matchCategory = category === 'All'
+      || (category === 'Favourites' ? favourites.includes(p.id) : p.category === category);
     return matchSearch && matchCategory;
   });
 
-  const addToCart = (product) => {
+  const onAddClick = (product) => {
     if (product.stock === false) return;
-    const existing = cart.find(c => c.id === product.id);
+    if (product.packingEligible) setPackingFor(product);
+    else addToCart(product, null);
+  };
+
+  const addToCart = (product, packingOpt) => {
+    if (product.stock === false) return;
+    const packingInfo = packingOpt ? { id: packingOpt.id, label: packingOpt.label, charge: packingOpt.charge } : null;
+    const key = lineKey({ id: product.id, packing: packingInfo });
+    const existing = cart.find(c => lineKey(c) === key);
     let newCart;
     if (existing) {
-      newCart = cart.map(c => c.id === product.id ? { ...c, qty: c.qty + 1 } : c);
+      newCart = cart.map(c => lineKey(c) === key ? { ...c, qty: c.qty + 1 } : c);
     } else {
-      newCart = [...cart, { ...product, qty: 1 }];
+      newCart = [...cart, { ...product, packing: packingInfo, qty: 1 }];
     }
     setCart(newCart);
     localStorage.setItem('mdCart', JSON.stringify(newCart));
@@ -121,8 +169,7 @@ export default function Home() {
   };
 
   const getCartQty = (id) => {
-    const item = cart.find(c => c.id === id);
-    return item ? item.qty : 0;
+    return cart.filter(c => c.id === id).reduce((s, c) => s + c.qty, 0);
   };
 
   return (
@@ -157,6 +204,12 @@ export default function Home() {
       </div>
 
       <div style={styles.categories}>
+        <button
+          style={{ ...styles.catBtn, ...(category === 'Favourites' ? styles.catBtnActive : {}) }}
+          onClick={() => setCategory('Favourites')}
+        >
+          ♥ Favourites ({favourites.length})
+        </button>
         {categories.map(cat => (
           <button
             key={cat}
@@ -181,7 +234,14 @@ export default function Home() {
         {filtered.map(product => {
           const outOfStock = product.stock === false;
           return (
-            <div key={product.id} style={{ ...styles.productCard, ...(outOfStock ? styles.productCardDisabled : {}) }}>
+            <div key={product.id} style={{ ...styles.productCard, ...(outOfStock ? styles.productCardDisabled : {}), position: 'relative' }}>
+              <button
+                aria-label={favourites.includes(product.id) ? 'Remove from favourites' : 'Add to favourites'}
+                style={{ ...styles.favBtn, color: favourites.includes(product.id) ? '#B02D2F' : '#bbb' }}
+                onClick={() => toggleFavourite(product)}
+              >
+                {favourites.includes(product.id) ? '♥' : '♡'}
+              </button>
               <ProductImage product={product} />
               <p style={styles.productName}>{product.name}</p>
               <p style={styles.productCategory}>{product.category}</p>
@@ -194,7 +254,7 @@ export default function Home() {
               ) : null}
               <button
                 style={{ ...styles.addBtn, ...(outOfStock ? styles.addBtnDisabled : {}) }}
-                onClick={() => addToCart(product)}
+                onClick={() => onAddClick(product)}
                 disabled={outOfStock}
               >
                 {outOfStock ? 'Unavailable' : 'Add to Cart'}
@@ -204,12 +264,28 @@ export default function Home() {
         })}
       </div>
 
+      {category === 'Favourites' && filtered.length === 0 && (
+        <p style={{ textAlign: 'center', color: '#999', padding: '30px 20px' }}>
+          No favourites yet — tap the ♡ on any product to save it here.
+        </p>
+      )}
+
+      {packingFor && (
+        <PackingModal
+          product={packingFor}
+          config={packing}
+          onClose={() => setPackingFor(null)}
+          onConfirm={(opt) => { addToCart(packingFor, opt); setPackingFor(null); }}
+        />
+      )}
+
       {toast && <div style={styles.toast}>{toast}</div>}
     </div>
   );
 }
 
 const styles = {
+  favBtn: { position: 'absolute', top: '6px', right: '6px', background: 'white', border: 'none', borderRadius: '50%', width: '32px', height: '32px', fontSize: '20px', lineHeight: '32px', cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.12)', zIndex: 1, padding: 0 },
   container: { minHeight: '100vh', background: '#f5f5f5', paddingBottom: '40px' },
   header: {
     background: 'linear-gradient(135deg, #6E1F21 0%, #B02D2F 100%)',

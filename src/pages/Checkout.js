@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 import bundledProducts from '../data/products.json';
+import { fetchPacking, getCachedPacking, cartTotals } from '../packing';
 
 const PRICE_CHECK_TIMEOUT_MS = 5000;
 const CREDIT_CHECK_TIMEOUT_MS = 5000;
@@ -30,6 +31,7 @@ export default function Checkout() {
   const [creditLimit, setCreditLimit] = useState(0);
   const [creditBalance, setCreditBalance] = useState(0);
   const [checkingCredit, setCheckingCredit] = useState(true);
+  const [packing, setPacking] = useState(getCachedPacking);
 
   useEffect(() => {
     try {
@@ -44,6 +46,7 @@ export default function Checkout() {
     } catch (e) {
       // ignore
     }
+    fetchPacking().then(setPacking);
     reconcilePrices();
     fetchCreditInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -111,7 +114,7 @@ export default function Checkout() {
     const currentCart = JSON.parse(localStorage.getItem('mdCart')) || [];
     for (const item of currentCart) {
       const live = byId[item.id];
-      if (!live || live.stock === false) {
+      if (!live || live.stock === false || (item.packing && live.packingEligible !== true)) {
         removedCount++;
         continue;
       }
@@ -134,12 +137,7 @@ export default function Checkout() {
     setCheckingPrices(false);
   };
 
-  const subtotal = cart.reduce((sum, c) => sum + c.price * c.qty, 0);
-  const totalGst = cart.reduce((sum, c) => {
-    const gstRate = c.gst || 0;
-    return sum + Math.round(c.price * c.qty * gstRate / 100);
-  }, 0);
-  const grandTotal = subtotal + totalGst;
+  const { subtotal, packingTotal, gst: totalGst, grandTotal } = cartTotals(cart, packing);
 
   const availableCredit = Math.max(0, creditLimit - creditBalance);
   const creditEligible = creditLimit > 0;
@@ -224,7 +222,7 @@ export default function Checkout() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           idToken,
-          items: cart.map(c => ({ id: c.id, qty: c.qty, name: c.name })),
+          items: cart.map(c => ({ id: c.id, qty: c.qty, name: c.name, packingId: c.packing?.id || null })),
           delivery,
           notes: notes.trim(),
           paymentMethod,
@@ -410,6 +408,12 @@ export default function Checkout() {
           <span>{cart.length} item{cart.length !== 1 ? 's' : ''}</span>
           <span>₹{subtotal}</span>
         </div>
+        {packingTotal > 0 && (
+          <div style={styles.billRow}>
+            <span>Packing charges</span>
+            <span>₹{packingTotal}</span>
+          </div>
+        )}
         <div style={styles.billRow}>
           <span>GST</span>
           <span>₹{totalGst}</span>
