@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../firebase';
+import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
+import { db, auth } from '../firebase';
 import bundledProducts from '../data/products.json';
 
 const OVERLAY_KEY = 'mdProductOverlay';
 const OVERLAY_TTL_MS = 30 * 60 * 1000;
 const FETCH_TIMEOUT_MS = 8000;
+const NEW_KEY = 'mdNewArrivals';
 
 // Shows the real product photo if one exists in /public/product-images/,
 // and automatically falls back to the emoji if it doesn't (e.g. this
@@ -46,6 +48,16 @@ export default function Home() {
   const [toast, setToast] = useState('');
   const [syncing, setSyncing] = useState(false);
 
+  // Ids of products flagged as "New Arrival" by the admin. Cached locally
+  // so the section shows instantly, then refreshed from Firestore.
+  const [newIds, setNewIds] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(NEW_KEY));
+      if (Array.isArray(saved)) return saved;
+    } catch (e) {}
+    return [];
+  });
+
   useEffect(() => {
     let stale = true;
     try {
@@ -54,6 +66,34 @@ export default function Home() {
     } catch (e) {}
     if (stale) syncFromFirebase(false);
   }, []);
+
+  useEffect(() => {
+    // Wait for Firebase auth to restore the session before reading.
+    let done = false;
+    const unsub = onAuthStateChanged(auth, () => {
+      if (done) return;
+      done = true;
+      loadNewArrivals();
+    });
+    return () => unsub();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const loadNewArrivals = async () => {
+    try {
+      const snap = await Promise.race([
+        getDoc(doc(db, 'config', 'newArrivals')),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('timeout')), FETCH_TIMEOUT_MS)
+        ),
+      ]);
+      const ids = snap.exists() && Array.isArray(snap.data().ids) ? snap.data().ids : [];
+      setNewIds(ids);
+      try { localStorage.setItem(NEW_KEY, JSON.stringify(ids)); } catch (e) {}
+    } catch (error) {
+      console.warn('New arrivals load skipped:', error.message);
+    }
+  };
 
   const syncFromFirebase = async (showFeedback) => {
     if (syncing) return;
@@ -97,6 +137,11 @@ export default function Home() {
     }
   };
 
+  // Shows the quick-reorder shortcut once this device has placed an order.
+  const hasPreviousOrder = (() => {
+    try { return !!JSON.parse(localStorage.getItem('mdLastOrder')); } catch (e) { return false; }
+  })();
+
   const categories = ['All', ...new Set(products.map(p => p.category))].sort();
 
   const filtered = products.filter(p => {
@@ -104,6 +149,10 @@ export default function Home() {
     const matchCategory = category === 'All' || p.category === category;
     return matchSearch && matchCategory;
   });
+
+  // Compare ids as strings so a number/string mismatch can never hide a product.
+  const newSet = new Set(newIds.map(String));
+  const newProducts = products.filter(p => newSet.has(String(p.id)) && p.stock !== false);
 
   const addToCart = (product) => {
     if (product.stock === false) return;
@@ -123,6 +172,34 @@ export default function Home() {
   const getCartQty = (id) => {
     const item = cart.find(c => c.id === id);
     return item ? item.qty : 0;
+  };
+
+  // One card renderer, used by both the New Arrivals row and the main grid.
+  const renderCard = (product) => {
+    const outOfStock = product.stock === false;
+    const isNew = newSet.has(String(product.id));
+    return (
+      <div key={product.id} style={{ ...styles.productCard, ...(outOfStock ? styles.productCardDisabled : {}) }}>
+        {isNew && <span style={styles.newBadge}>NEW</span>}
+        <ProductImage product={product} />
+        <p style={styles.productName}>{product.name}</p>
+        <p style={styles.productCategory}>{product.category}</p>
+        <p style={styles.productPrice}>₹{product.price}/{product.unit}</p>
+        {product.gst === 0 && <p style={styles.gstFree}>GST Free</p>}
+        {outOfStock ? (
+          <p style={styles.outOfStockLabel}>Out of Stock</p>
+        ) : getCartQty(product.id) > 0 ? (
+          <div style={styles.qtyBadge}>In cart: {getCartQty(product.id)}</div>
+        ) : null}
+        <button
+          style={{ ...styles.addBtn, ...(outOfStock ? styles.addBtnDisabled : {}) }}
+          onClick={() => addToCart(product)}
+          disabled={outOfStock}
+        >
+          {outOfStock ? 'Unavailable' : 'Add to Cart'}
+        </button>
+      </div>
+    );
   };
 
   return (
@@ -156,6 +233,17 @@ export default function Home() {
         />
       </div>
 
+      {hasPreviousOrder && (
+        <div style={styles.reorderBar}>
+          <button
+            style={styles.reorderBarBtn}
+            onClick={() => navigate('/orders', { state: { autoReorder: true } })}
+          >
+            🔁 Reorder your last order
+          </button>
+        </div>
+      )}
+
       <div style={styles.categories}>
         {categories.map(cat => (
           <button
@@ -168,40 +256,32 @@ export default function Home() {
         ))}
       </div>
 
+      {newProducts.length > 0 && !search && category === 'All' && (
+        <div style={styles.newSection}>
+          <p style={styles.newTitle}>✨ New Arrivals</p>
+          <div style={styles.newRow}>
+            {newProducts.map(p => (
+              <div key={p.id} style={styles.newCardWrap}>{renderCard(p)}</div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div style={styles.resultRow}>
         <p style={styles.resultCount}>
           {filtered.length} product{filtered.length !== 1 ? 's' : ''} found
         </p>
-        <button style={styles.refreshBtn} onClick={() => syncFromFirebase(true)} disabled={syncing}>
+        <button
+          style={styles.refreshBtn}
+          onClick={() => { syncFromFirebase(true); loadNewArrivals(); }}
+          disabled={syncing}
+        >
           {syncing ? 'Refreshing…' : '↻ Refresh'}
         </button>
       </div>
 
       <div style={styles.grid}>
-        {filtered.map(product => {
-          const outOfStock = product.stock === false;
-          return (
-            <div key={product.id} style={{ ...styles.productCard, ...(outOfStock ? styles.productCardDisabled : {}) }}>
-              <ProductImage product={product} />
-              <p style={styles.productName}>{product.name}</p>
-              <p style={styles.productCategory}>{product.category}</p>
-              <p style={styles.productPrice}>₹{product.price}/{product.unit}</p>
-              {product.gst === 0 && <p style={styles.gstFree}>GST Free</p>}
-              {outOfStock ? (
-                <p style={styles.outOfStockLabel}>Out of Stock</p>
-              ) : getCartQty(product.id) > 0 ? (
-                <div style={styles.qtyBadge}>In cart: {getCartQty(product.id)}</div>
-              ) : null}
-              <button
-                style={{ ...styles.addBtn, ...(outOfStock ? styles.addBtnDisabled : {}) }}
-                onClick={() => addToCart(product)}
-                disabled={outOfStock}
-              >
-                {outOfStock ? 'Unavailable' : 'Add to Cart'}
-              </button>
-            </div>
-          );
-        })}
+        {filtered.map(product => renderCard(product))}
       </div>
 
       {toast && <div style={styles.toast}>{toast}</div>}
@@ -229,12 +309,19 @@ const styles = {
   categories: { display: 'flex', gap: '8px', padding: '0 16px 12px', overflowX: 'auto', whiteSpace: 'nowrap' },
   catBtn: { padding: '8px 16px', borderRadius: '20px', border: '1px solid #ddd', background: 'white', fontSize: '13px', cursor: 'pointer', flexShrink: 0 },
   catBtnActive: { background: '#B02D2F', color: 'white', border: '1px solid #B02D2F' },
+  reorderBar: { padding: '0 16px 12px' },
+  reorderBarBtn: { width: '100%', padding: '12px', background: '#FFF112', color: '#6E1F21', border: 'none', borderRadius: '12px', fontSize: '14px', fontWeight: 'bold', cursor: 'pointer' },
+  newSection: { padding: '0 0 8px' },
+  newTitle: { fontSize: '16px', fontWeight: 'bold', color: '#6E1F21', margin: '4px 16px 10px' },
+  newRow: { display: 'flex', gap: '12px', overflowX: 'auto', padding: '0 16px 8px' },
+  newCardWrap: { flex: '0 0 160px' },
   resultRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 16px', marginBottom: '8px' },
   resultCount: { color: '#999', fontSize: '13px', margin: 0 },
   refreshBtn: { background: 'none', border: 'none', color: '#B02D2F', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', padding: '4px 8px' },
   grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '12px', padding: '0 16px' },
-  productCard: { background: 'white', borderRadius: '12px', padding: '16px', textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' },
+  productCard: { position: 'relative', background: 'white', borderRadius: '12px', padding: '16px', textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' },
   productCardDisabled: { opacity: 0.6 },
+  newBadge: { position: 'absolute', top: '8px', left: '8px', zIndex: 1, background: '#FFF112', color: '#6E1F21', fontSize: '10px', fontWeight: 'bold', padding: '2px 8px', borderRadius: '10px' },
   productEmoji: { fontSize: '40px', marginBottom: '8px' },
   productPhoto: { width: '100%', height: '96px', objectFit: 'cover', borderRadius: '8px', marginBottom: '8px', background: '#f5f5f5' },
   productName: { fontSize: '14px', fontWeight: 'bold', margin: '0 0 4px', minHeight: '36px' },

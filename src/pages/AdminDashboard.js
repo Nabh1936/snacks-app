@@ -24,6 +24,10 @@ export default function AdminDashboard() {
   const [savingCredit, setSavingCredit] = useState(false);
   const [editingLimits, setEditingLimits] = useState({});
 
+  // New Arrivals: list of product ids stored in config/newArrivals
+  const [newIds, setNewIds] = useState([]);
+  const [showNewOnly, setShowNewOnly] = useState(false);
+
   const user = (() => { try { return JSON.parse(localStorage.getItem('mdUser')); } catch (e) { return null; } })();
 
   // Real access gate: being signed in isn't enough — this checks that the
@@ -71,6 +75,14 @@ export default function AdminDashboard() {
       const retailerList = retailerSnap.docs.map(d => ({ id: d.id, ...d.data() }));
       retailerList.sort((a, b) => (b.balanceOwed || 0) - (a.balanceOwed || 0));
       setRetailers(retailerList);
+
+      // Separate try/catch so a rules problem here can't break the dashboard.
+      try {
+        const newSnap = await getDoc(doc(db, 'config', 'newArrivals'));
+        setNewIds(newSnap.exists() && Array.isArray(newSnap.data().ids) ? newSnap.data().ids : []);
+      } catch (e) {
+        console.warn('Could not load new arrivals:', e.message);
+      }
     } catch (error) {
       console.error('Error:', error);
     } finally {
@@ -147,6 +159,23 @@ export default function AdminDashboard() {
     } catch (error) {
       console.error('Error updating stock:', error);
     }
+  };
+
+  const saveNewIds = async (ids) => {
+    try {
+      await setDoc(doc(db, 'config', 'newArrivals'), { ids, updatedAt: Date.now() });
+      setNewIds(ids);
+    } catch (error) {
+      console.error('Error saving new arrivals:', error);
+      alert('Could not save. Please try again.');
+    }
+  };
+
+  const toggleNew = (product) => {
+    const key = String(product.id);
+    const current = newIds.map(String);
+    const next = current.includes(key) ? current.filter(x => x !== key) : [...current, key];
+    saveNewIds(next);
   };
 
   const clearAllOrders = async () => {
@@ -245,9 +274,12 @@ export default function AdminDashboard() {
     return matchSearch && matchDate;
   });
 
+  const newSet = new Set(newIds.map(String));
+
   const filteredProducts = products.filter(p =>
-    p.name.toLowerCase().includes(stockSearch.toLowerCase()) ||
-    (p.category || '').toLowerCase().includes(stockSearch.toLowerCase())
+    (!showNewOnly || newSet.has(String(p.id))) &&
+    (p.name.toLowerCase().includes(stockSearch.toLowerCase()) ||
+      (p.category || '').toLowerCase().includes(stockSearch.toLowerCase()))
   );
 
   const totalRevenue = orders.reduce((sum, o) => sum + (o.grandTotal || 0), 0);
@@ -502,6 +534,23 @@ export default function AdminDashboard() {
             {outOfStockCount > 0 && ` · ${outOfStockCount} out of stock`}
           </p>
 
+          <div style={styles.newBar}>
+            <button
+              style={{ ...styles.newFilterBtn, ...(showNewOnly ? styles.newFilterBtnActive : {}) }}
+              onClick={() => setShowNewOnly(!showNewOnly)}
+            >
+              ✨ New Arrivals ({newIds.length})
+            </button>
+            {newIds.length > 0 && (
+              <button
+                style={styles.newClearBtn}
+                onClick={() => { if (window.confirm('Remove all products from New Arrivals?')) saveNewIds([]); }}
+              >
+                Clear all
+              </button>
+            )}
+          </div>
+
           {filteredProducts.map(product => (
             <div key={product.firebaseId} style={styles.stockRow}>
               <div style={styles.stockInfo}>
@@ -510,16 +559,24 @@ export default function AdminDashboard() {
                   {product.category} · ₹{product.price}/{product.unit}
                 </p>
               </div>
-              <button
-                style={{
-                  ...styles.stockToggle,
-                  background: product.stock ? '#e8f5e9' : '#FDEAEA',
-                  color: product.stock ? '#2e7d32' : '#B02D2F',
-                }}
-                onClick={() => toggleStock(product)}
-              >
-                {product.stock ? 'In Stock' : 'Out of Stock'}
-              </button>
+              <div style={styles.rowButtons}>
+                <button
+                  style={{ ...styles.newToggle, ...(newSet.has(String(product.id)) ? styles.newToggleOn : {}) }}
+                  onClick={() => toggleNew(product)}
+                >
+                  {newSet.has(String(product.id)) ? '✨ New' : '+ New'}
+                </button>
+                <button
+                  style={{
+                    ...styles.stockToggle,
+                    background: product.stock ? '#e8f5e9' : '#FDEAEA',
+                    color: product.stock ? '#2e7d32' : '#B02D2F',
+                  }}
+                  onClick={() => toggleStock(product)}
+                >
+                  {product.stock ? 'In Stock' : 'Out of Stock'}
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -741,6 +798,13 @@ const styles = {
   stockName: { margin: '0 0 4px', fontWeight: 'bold', fontSize: '14px' },
   stockMeta: { margin: 0, color: '#999', fontSize: '12px' },
   stockToggle: { border: 'none', borderRadius: '20px', padding: '8px 14px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', whiteSpace: 'nowrap' },
+  newBar: { display: 'flex', gap: '8px', marginBottom: '12px' },
+  newFilterBtn: { flex: 1, padding: '10px', borderRadius: '10px', border: '1px solid #ddd', background: 'white', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer', color: '#666' },
+  newFilterBtnActive: { background: '#FFF112', border: '1px solid #E6D900', color: '#6E1F21' },
+  newClearBtn: { padding: '10px 14px', borderRadius: '10px', border: '1px solid #B02D2F', background: 'white', color: '#B02D2F', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer' },
+  rowButtons: { display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'stretch' },
+  newToggle: { border: '1px solid #ddd', borderRadius: '20px', padding: '6px 14px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', background: 'white', color: '#666', whiteSpace: 'nowrap' },
+  newToggleOn: { background: '#FFF112', border: '1px solid #E6D900', color: '#6E1F21' },
   creditFormBox: { background: 'white', borderRadius: '12px', padding: '18px', marginBottom: '20px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' },
   label: { display: 'block', fontSize: '12px', color: '#777', marginBottom: '5px', fontWeight: 'bold' },
   input: {
