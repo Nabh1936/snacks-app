@@ -13,10 +13,9 @@ if (!getApps().length) {
   });
 }
 
-// Keep these two lists in sync with src/packing.js. The server only accepts
-// packing options it knows about, and only for items sold in these units.
+// Keep this list in sync with PACKING_OPTIONS in src/pages/Checkout.js and Orders.js. Every order must carry exactly
+// one of these packing types; the server rejects anything else.
 const PACKING_OPTIONS = ['Tray Packing', 'Silver Pouch Packing', 'HealthPlus Packing', 'Dabba Packing'];
-const PACKABLE_UNITS = ['kg'];
 
 function makeOrderNumber() {
   const d = new Date();
@@ -33,7 +32,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { idToken, items, delivery, notes, paymentMethod, orderNumber: requestedOrderNumber } = req.body || {};
+    const { idToken, items, delivery, notes, paymentMethod, packing, orderNumber: requestedOrderNumber } = req.body || {};
 
     if (!idToken) {
       return res.status(401).json({ error: 'Not signed in. Please refresh and try again.' });
@@ -43,6 +42,10 @@ export default async function handler(req, res) {
     }
     if (!delivery || !delivery.shopName || !delivery.address || !delivery.city || !delivery.pincode) {
       return res.status(400).json({ error: 'Delivery details are incomplete.' });
+    }
+    const finalPacking = String(packing || '').trim();
+    if (!PACKING_OPTIONS.includes(finalPacking)) {
+      return res.status(400).json({ error: 'Please choose the type of packing for this order.' });
     }
 
     let decoded;
@@ -89,12 +92,6 @@ export default async function handler(req, res) {
       subtotal += lineSubtotal;
       gst += lineGst;
 
-      // Packing: only kept if it's a known option AND the product is sold
-      // in a packable unit; anything else is silently stored as "none".
-      const wantedPacking = String(requested.packing || '').trim();
-      const packable = PACKABLE_UNITS.includes(String(live.unit || '').toLowerCase());
-      const packing = packable && PACKING_OPTIONS.includes(wantedPacking) ? wantedPacking : '';
-
       finalItems.push({
         id: live.id,
         name: live.name,
@@ -102,7 +99,6 @@ export default async function handler(req, res) {
         unit: live.unit,
         gst: live.gst,
         qty,
-        packing,
       });
     }
 
@@ -143,6 +139,7 @@ export default async function handler(req, res) {
         pincode: String(delivery.pincode).trim(),
       },
       notes: notes ? String(notes).trim() : '',
+      packing: finalPacking,
       items: finalItems,
       subtotal,
       gst,

@@ -3,7 +3,7 @@ import { signInAnonymously } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 
-const APP_VERSION = 'Updated 12 Sep 2026 - admin auth v1';
+const APP_VERSION = 'Updated 24 Oct 2026 - packing v1';
 
 export default function Login() {
   const [name, setName] = useState('');

@@ -5,6 +5,11 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { db, auth } from '../firebase';
 import bundledProducts from '../data/products.json';
 
+// Packing types uncle offers. Every order must choose exactly one.
+// To rename or add an option, edit this list in Checkout.js AND Orders.js,
+// and the same list at the top of api/place-order.mjs.
+const PACKING_OPTIONS = ['Tray Packing', 'Silver Pouch Packing', 'HealthPlus Packing', 'Dabba Packing'];
+
 const PRODUCT_FETCH_TIMEOUT_MS = 5000;
 
 // ---------- helpers for the Reorder sheet ----------
@@ -86,6 +91,10 @@ function ReorderSheet({ order, credit, onClose }) {
   const [placing, setPlacing] = useState(false);
   const [notes, setNotes] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('COD');
+  // Pre-selected from the previous order, but the retailer can change it.
+  const [packing, setPacking] = useState(
+    PACKING_OPTIONS.includes(order.packing) ? order.packing : ''
+  );
   // One order number per opened sheet: if the network drops and the retailer
   // presses Place Order again, the same number is reused (no duplicate order).
   const [orderNumber] = useState(() => makeOrderNumber());
@@ -144,7 +153,7 @@ function ReorderSheet({ order, credit, onClose }) {
   const unavailableCount = lines ? lines.filter(l => !l.available).length : 0;
 
   const canPlace =
-    !!lines && !placing && totals.count > 0 && deliveryOk &&
+    !!lines && !placing && totals.count > 0 && deliveryOk && !!packing &&
     !(paymentMethod === 'Credit' && !creditCoversOrder);
 
   const placeNow = async () => {
@@ -170,6 +179,7 @@ function ReorderSheet({ order, credit, onClose }) {
         body: JSON.stringify({
           idToken,
           items: lines.filter(l => l.available).map(l => ({ id: l.id, qty: l.qty, name: l.name })),
+          packing,
           delivery: cleanDelivery,
           notes: notes.trim(),
           paymentMethod,
@@ -327,6 +337,24 @@ function ReorderSheet({ order, credit, onClose }) {
               )}
             </div>
 
+            <div style={styles.box}>
+              <p style={styles.boxLabel}>
+                Packing type <span style={styles.requiredTag}>* required</span>
+              </p>
+              {PACKING_OPTIONS.map(opt => (
+                <div
+                  key={opt}
+                  style={{ ...styles.payOption, ...(packing === opt ? styles.payOptionActive : {}) }}
+                  onClick={() => setPacking(opt)}
+                >
+                  <div style={styles.radioOuter}>
+                    {packing === opt && <div style={styles.radioInner} />}
+                  </div>
+                  <span style={styles.payText}>{opt}</span>
+                </div>
+              ))}
+            </div>
+
             <input
               style={styles.notesInput}
               type="text"
@@ -350,7 +378,7 @@ function ReorderSheet({ order, credit, onClose }) {
               onClick={placeNow}
               disabled={!canPlace}
             >
-              {placing ? 'Placing Order…' : `Place Order — ₹${totals.grandTotal}`}
+              {placing ? 'Placing Order…' : !packing ? 'Choose a packing type to continue' : `Place Order — ₹${totals.grandTotal}`}
             </button>
             <button style={styles.editBtn} onClick={editInCheckout} disabled={placing || totals.count === 0}>
               Change address or add items
@@ -498,6 +526,11 @@ export default function Orders() {
                 }}>{order.status || 'Pending'}</span>
               </div>
               <p style={styles.orderDate}>{order.date}</p>
+              {order.packing && (
+                <p style={{ margin: '0 0 12px' }}>
+                  <span style={styles.packBadge}>📦 {order.packing}</span>
+                </p>
+              )}
 
               {order.items?.map((item, i) => (
                 <div key={i} style={styles.orderItem}>
@@ -612,6 +645,8 @@ const styles = {
   lineName: { margin: '0 0 3px', fontWeight: 'bold', fontSize: '13px' },
   linePrice: { margin: 0, color: '#999', fontSize: '12px' },
   wasPrice: { color: '#B02D2F' },
+  requiredTag: { color: '#B02D2F', textTransform: 'none', letterSpacing: 0, marginLeft: '6px' },
+  packBadge: { display: 'inline-block', marginTop: '3px', fontSize: '11px', color: '#7A6100', background: '#FFF9E0', padding: '2px 8px', borderRadius: '10px' },
   lineOut: { margin: '4px 0 0', color: '#B02D2F', fontSize: '11px', fontWeight: 'bold' },
   lineRight: { display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px' },
   qtyControl: { display: 'flex', alignItems: 'center', gap: '10px' },

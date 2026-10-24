@@ -4,6 +4,11 @@ import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 import bundledProducts from '../data/products.json';
 
+// Packing types uncle offers. Every order must choose exactly one.
+// To rename or add an option, edit this list in Checkout.js AND Orders.js,
+// and the same list at the top of api/place-order.mjs.
+const PACKING_OPTIONS = ['Tray Packing', 'Silver Pouch Packing', 'HealthPlus Packing', 'Dabba Packing'];
+
 const PRICE_CHECK_TIMEOUT_MS = 5000;
 const CREDIT_CHECK_TIMEOUT_MS = 5000;
 
@@ -26,6 +31,7 @@ export default function Checkout() {
   const [paymentMethod, setPaymentMethod] = useState('COD');
   const [error, setError] = useState('');
   const [placing, setPlacing] = useState(false);
+  const [packing, setPacking] = useState('');
 
   const [creditLimit, setCreditLimit] = useState(0);
   const [creditBalance, setCreditBalance] = useState(0);
@@ -202,6 +208,10 @@ export default function Checkout() {
       setError('Please enter a valid 6 digit pincode.');
       return;
     }
+    if (!packing) {
+      setError('Please choose the type of packing for this order.');
+      return;
+    }
     if (!auth.currentUser) {
       setError('Your session has expired. Please go back and log in again.');
       return;
@@ -225,6 +235,7 @@ export default function Checkout() {
         body: JSON.stringify({
           idToken,
           items: cart.map(c => ({ id: c.id, qty: c.qty, name: c.name })),
+          packing,
           delivery,
           notes: notes.trim(),
           paymentMethod,
@@ -405,11 +416,32 @@ export default function Checkout() {
       </div>
 
       <div style={styles.section}>
+        <h3 style={styles.sectionTitle}>
+          Packing Type <span style={styles.required}>* required</span>
+        </h3>
+        {PACKING_OPTIONS.map(opt => (
+          <div
+            key={opt}
+            style={{ ...styles.payOption, ...(packing === opt ? styles.payOptionActive : {}) }}
+            onClick={() => { setPacking(opt); setError(''); }}
+          >
+            <div style={styles.radioOuter}>
+              {packing === opt && <div style={styles.radioInner} />}
+            </div>
+            <div>
+              <p style={styles.payTitle}>{opt}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div style={styles.section}>
         <h3 style={styles.sectionTitle}>Order Summary</h3>
         <div style={styles.billRow}>
           <span>{cart.length} item{cart.length !== 1 ? 's' : ''}</span>
           <span>₹{subtotal}</span>
         </div>
+        {packing && <p style={styles.packRow}>📦 Packing: {packing}</p>}
         <div style={styles.billRow}>
           <span>GST</span>
           <span>₹{totalGst}</span>
@@ -424,8 +456,18 @@ export default function Checkout() {
       {error && <p style={styles.error}>{error}</p>}
 
       <div style={styles.footer}>
-        <button style={styles.orderBtn} onClick={placeOrder} disabled={placing || checkingPrices || checkingCredit}>
-          {checkingPrices || checkingCredit ? 'Checking order details...' : placing ? 'Placing Order...' : `Place Order — ₹${grandTotal}`}
+        <button
+          style={{ ...styles.orderBtn, ...(!packing ? styles.orderBtnDisabled : {}) }}
+          onClick={placeOrder}
+          disabled={placing || checkingPrices || checkingCredit || !packing}
+        >
+          {checkingPrices || checkingCredit
+            ? 'Checking order details...'
+            : placing
+              ? 'Placing Order...'
+              : !packing
+                ? 'Choose a packing type to continue'
+                : `Place Order — ₹${grandTotal}`}
         </button>
         <p style={styles.footNote}>
           {paymentMethod === 'Credit'
@@ -508,6 +550,7 @@ const styles = {
   payTitle: { margin: '0 0 2px', fontWeight: 'bold', fontSize: '14px' },
   paySub: { margin: 0, fontSize: '12px', color: '#999' },
   billRow: { display: 'flex', justifyContent: 'space-between', marginBottom: '10px', fontSize: '15px' },
+  packRow: { margin: '0 0 8px', fontSize: '12px', color: '#7A6100' },
   divider: { height: '1px', background: '#eee', margin: '12px 0' },
   error: {
     color: '#B02D2F',
@@ -529,5 +572,7 @@ const styles = {
     fontWeight: 'bold',
     cursor: 'pointer',
   },
+  orderBtnDisabled: { background: '#ccc', cursor: 'not-allowed' },
+  required: { color: '#B02D2F', fontSize: '12px', fontWeight: 'normal', marginLeft: '6px' },
   footNote: { textAlign: 'center', color: '#999', fontSize: '12px', marginTop: '10px' },
 };

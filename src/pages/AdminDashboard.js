@@ -455,6 +455,10 @@ export default function AdminDashboard() {
 
                   <p style={styles.orderDate}>{order.date}</p>
 
+                  {order.packing && (
+                    <p style={styles.packFlag}>📦 Packing: {order.packing}</p>
+                  )}
+
                   {order.delivery && (
                     <div style={styles.addressBox}>
                       <p style={styles.addressText}>
@@ -781,6 +785,7 @@ const styles = {
   orderPhoneSub: { display: 'block', fontSize: '12px', color: '#999' },
   orderStatus: { padding: '4px 10px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold', height: 'fit-content', whiteSpace: 'nowrap' },
   orderDate: { color: '#999', fontSize: '12px', marginBottom: '10px' },
+  packFlag: { display: 'inline-block', margin: '0 0 10px', fontSize: '12px', fontWeight: 'bold', color: '#7A6100', background: '#FFF9E0', border: '1px solid #F0DE8C', padding: '4px 10px', borderRadius: '10px' },
   addressBox: { background: '#fafafa', borderRadius: '8px', padding: '10px', marginBottom: '10px' },
   addressText: { margin: '0 0 3px', fontSize: '12px', color: '#666', lineHeight: '1.45' },
   notes: { fontSize: '12px', color: '#8A6D00', background: '#FFF9E0', padding: '8px', borderRadius: '8px', marginBottom: '10px' },
