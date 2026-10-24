@@ -13,6 +13,11 @@ if (!getApps().length) {
   });
 }
 
+// Keep these two lists in sync with src/packing.js. The server only accepts
+// packing options it knows about, and only for items sold in these units.
+const PACKING_OPTIONS = ['Tray Packing', 'Silver Pouch Packing', 'HealthPlus Packing', 'Dabba Packing'];
+const PACKABLE_UNITS = ['kg'];
+
 function makeOrderNumber() {
   const d = new Date();
   const yy = String(d.getFullYear()).slice(-2);
@@ -83,6 +88,13 @@ export default async function handler(req, res) {
       const lineGst = Math.round(lineSubtotal * (live.gst || 0) / 100);
       subtotal += lineSubtotal;
       gst += lineGst;
+
+      // Packing: only kept if it's a known option AND the product is sold
+      // in a packable unit; anything else is silently stored as "none".
+      const wantedPacking = String(requested.packing || '').trim();
+      const packable = PACKABLE_UNITS.includes(String(live.unit || '').toLowerCase());
+      const packing = packable && PACKING_OPTIONS.includes(wantedPacking) ? wantedPacking : '';
+
       finalItems.push({
         id: live.id,
         name: live.name,
@@ -90,6 +102,7 @@ export default async function handler(req, res) {
         unit: live.unit,
         gst: live.gst,
         qty,
+        packing,
       });
     }
 
