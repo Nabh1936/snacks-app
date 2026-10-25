@@ -320,16 +320,6 @@
     "image": "wheat-oats-cookies.jpg"
   },
   {
-    "id": 33,
-    "name": "Alsi Chips",
-    "category": "Chips",
-    "price": 210,
-    "unit": "kg",
-    "gst": 5,
-    "stock": true,
-    "image": "alsi-chips.jpg"
-  },
-  {
     "id": 34,
     "name": "Bajri Chips",
     "category": "Chips",
@@ -352,7 +342,7 @@
   {
     "id": 36,
     "name": "Makai Chivda Diet",
-    "category": "Chips",
+    "category": "Chivda",
     "price": 200,
     "unit": "kg",
     "gst": 5,
@@ -420,16 +410,6 @@
     "image": "pani-puri-chips.jpg"
   },
   {
-    "id": 43,
-    "name": "Peri Peri Chips",
-    "category": "Chips",
-    "price": 200,
-    "unit": "kg",
-    "gst": 5,
-    "stock": true,
-    "image": "peri-peri-chips.jpg"
-  },
-  {
     "id": 44,
     "name": "Soya Chips [masala]",
     "category": "Chips",
@@ -458,16 +438,6 @@
     "gst": 5,
     "stock": true,
     "image": "tiranga-chips.jpg"
-  },
-  {
-    "id": 47,
-    "name": "Millet Curry Leaves Chips",
-    "category": "Chips",
-    "price": 330,
-    "unit": "kg",
-    "gst": 5,
-    "stock": true,
-    "image": "millet-curry-leaves-chips.jpg"
   },
   {
     "id": 48,
@@ -1658,16 +1628,6 @@
     "gst": 5,
     "stock": true,
     "image": "chocolate-nibal.jpg"
-  },
-  {
-    "id": 167,
-    "name": "Mango Nibal",
-    "category": "Nibal",
-    "price": 200,
-    "unit": "kg",
-    "gst": 5,
-    "stock": true,
-    "image": "mango-nibal.jpg"
   },
   {
     "id": 168,
@@ -3598,16 +3558,6 @@
     "gst": 5,
     "stock": true,
     "image": "potato-bbq-biscuit.jpg"
-  },
-  {
-    "id": 361,
-    "name": "Potato Biscuit 100 Gm",
-    "category": "Biscuits",
-    "price": 26.6,
-    "unit": "1 PKT",
-    "gst": 5,
-    "stock": true,
-    "image": "potato-biscuit-100-gm.jpg"
   },
   {
     "id": 362,
