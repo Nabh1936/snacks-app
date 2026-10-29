@@ -13,9 +13,14 @@ if (!getApps().length) {
   });
 }
 
-// Keep this list in sync with PACKING_OPTIONS in src/pages/Checkout.js and Orders.js. Every order must carry exactly
-// one of these packing types; the server rejects anything else.
+// Packing is OPTIONAL and chosen per item in the Cart. Keep these lists in sync
+// with Cart.js and Orders.js. It is not offered for Makhana, Jawar/Jawari puff,
+// Quinoa and Chikki products; the server enforces that too.
 const PACKING_OPTIONS = ['Tray Packing', 'Silver Pouch Packing', 'HealthPlus Packing', 'Dabba Packing'];
+const NO_PACKING_CATEGORIES = ['makhana', 'jawar', 'jawari', 'quinoa', 'chikki'];
+const canChoosePacking = (item) =>
+  !NO_PACKING_CATEGORIES.includes(String((item && item.category) || '').trim().toLowerCase()) &&
+  !String((item && item.name) || '').toLowerCase().includes('makhana');
 
 function makeOrderNumber() {
   const d = new Date();
@@ -32,7 +37,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { idToken, items, delivery, notes, paymentMethod, packing, orderNumber: requestedOrderNumber } = req.body || {};
+    const { idToken, items, delivery, notes, paymentMethod, orderNumber: requestedOrderNumber } = req.body || {};
 
     if (!idToken) {
       return res.status(401).json({ error: 'Not signed in. Please refresh and try again.' });
@@ -42,10 +47,6 @@ export default async function handler(req, res) {
     }
     if (!delivery || !delivery.shopName || !delivery.address || !delivery.city || !delivery.pincode) {
       return res.status(400).json({ error: 'Delivery details are incomplete.' });
-    }
-    const finalPacking = String(packing || '').trim();
-    if (!PACKING_OPTIONS.includes(finalPacking)) {
-      return res.status(400).json({ error: 'Please choose the type of packing for this order.' });
     }
 
     let decoded;
@@ -92,6 +93,11 @@ export default async function handler(req, res) {
       subtotal += lineSubtotal;
       gst += lineGst;
 
+      // Optional packing: kept only if it is a known option AND this product
+      // is allowed to have packing; otherwise stored as "" (none).
+      const wantedPacking = String(requested.packing || '').trim();
+      const packing = canChoosePacking(live) && PACKING_OPTIONS.includes(wantedPacking) ? wantedPacking : '';
+
       finalItems.push({
         id: live.id,
         name: live.name,
@@ -99,6 +105,7 @@ export default async function handler(req, res) {
         unit: live.unit,
         gst: live.gst,
         qty,
+        packing,
       });
     }
 
@@ -139,7 +146,6 @@ export default async function handler(req, res) {
         pincode: String(delivery.pincode).trim(),
       },
       notes: notes ? String(notes).trim() : '',
-      packing: finalPacking,
       items: finalItems,
       subtotal,
       gst,

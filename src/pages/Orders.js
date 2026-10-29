@@ -5,10 +5,14 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { db, auth } from '../firebase';
 import bundledProducts from '../data/products.json';
 
-// Packing types uncle offers. Every order must choose exactly one.
-// To rename or add an option, edit this list in Checkout.js AND Orders.js,
-// and the same list at the top of api/place-order.mjs.
+// Packing types uncle offers. Packing is OPTIONAL and chosen per item in the Cart.
+// It is not offered for Makhana, Jawar/Jawari puff, Quinoa and Chikki products.
+// To change either list, edit it in Cart.js, Orders.js AND api/place-order.mjs.
 const PACKING_OPTIONS = ['Tray Packing', 'Silver Pouch Packing', 'HealthPlus Packing', 'Dabba Packing'];
+const NO_PACKING_CATEGORIES = ['makhana', 'jawar', 'jawari', 'quinoa', 'chikki'];
+const canChoosePacking = (item) =>
+  !NO_PACKING_CATEGORIES.includes(String((item && item.category) || '').trim().toLowerCase()) &&
+  !String((item && item.name) || '').toLowerCase().includes('makhana');
 
 const PRODUCT_FETCH_TIMEOUT_MS = 5000;
 
@@ -91,10 +95,6 @@ function ReorderSheet({ order, credit, onClose }) {
   const [placing, setPlacing] = useState(false);
   const [notes, setNotes] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('COD');
-  // Pre-selected from the previous order, but the retailer can change it.
-  const [packing, setPacking] = useState(
-    PACKING_OPTIONS.includes(order.packing) ? order.packing : ''
-  );
   // One order number per opened sheet: if the network drops and the retailer
   // presses Place Order again, the same number is reused (no duplicate order).
   const [orderNumber] = useState(() => makeOrderNumber());
@@ -126,6 +126,8 @@ function ReorderSheet({ order, credit, onClose }) {
           gst: available ? (live.gst || 0) : (item.gst || 0),
           origPrice: item.price,
           qty: Number(item.qty) || 1,
+          // optional; carried over from the previous order, can be changed
+          packing: PACKING_OPTIONS.includes(item.packing) ? item.packing : '',
           available,
         };
       });
@@ -147,13 +149,17 @@ function ReorderSheet({ order, credit, onClose }) {
       .filter(l => l.qty > 0));
   };
 
+  const setLinePacking = (id, packing) => {
+    setLines(prev => prev.map(l => l.id === id ? { ...l, packing } : l));
+  };
+
   const totals = lines ? calcTotals(lines) : { subtotal: 0, gst: 0, grandTotal: 0, count: 0 };
   const creditCoversOrder = totals.grandTotal <= availableCredit;
   const priceChanged = !!lines && lines.some(l => l.available && l.price !== l.origPrice);
   const unavailableCount = lines ? lines.filter(l => !l.available).length : 0;
 
   const canPlace =
-    !!lines && !placing && totals.count > 0 && deliveryOk && !!packing &&
+    !!lines && !placing && totals.count > 0 && deliveryOk &&
     !(paymentMethod === 'Credit' && !creditCoversOrder);
 
   const placeNow = async () => {
@@ -178,8 +184,10 @@ function ReorderSheet({ order, credit, onClose }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           idToken,
-          items: lines.filter(l => l.available).map(l => ({ id: l.id, qty: l.qty, name: l.name })),
-          packing,
+          items: lines.filter(l => l.available).map(l => ({
+            id: l.id, qty: l.qty, name: l.name,
+            packing: canChoosePacking(l) ? l.packing : '',
+          })),
           delivery: cleanDelivery,
           notes: notes.trim(),
           paymentMethod,
@@ -217,6 +225,7 @@ function ReorderSheet({ order, credit, onClose }) {
     const cartItems = active.map(l => ({
       id: l.id, name: l.name, price: l.price, unit: l.unit,
       gst: l.gst, image: l.image, category: l.category, qty: l.qty,
+      packing: canChoosePacking(l) ? l.packing : '',
     }));
     localStorage.setItem('mdCart', JSON.stringify(cartItems));
     if (deliveryOk) localStorage.setItem('mdDelivery', JSON.stringify(delivery));
@@ -266,6 +275,18 @@ function ReorderSheet({ order, credit, onClose }) {
                       )}
                     </p>
                     {!line.available && <p style={styles.lineOut}>Out of stock — skipped</p>}
+                    {line.available && canChoosePacking(line) && (
+                      <select
+                        style={styles.packSelect}
+                        value={line.packing || ''}
+                        onChange={e => setLinePacking(line.id, e.target.value)}
+                      >
+                        <option value="">📦 Packing: none (optional)</option>
+                        {PACKING_OPTIONS.map(opt => (
+                          <option key={opt} value={opt}>{opt}</option>
+                        ))}
+                      </select>
+                    )}
                   </div>
                   {line.available ? (
                     <div style={styles.lineRight}>
@@ -337,24 +358,6 @@ function ReorderSheet({ order, credit, onClose }) {
               )}
             </div>
 
-            <div style={styles.box}>
-              <p style={styles.boxLabel}>
-                Packing type <span style={styles.requiredTag}>* required</span>
-              </p>
-              {PACKING_OPTIONS.map(opt => (
-                <div
-                  key={opt}
-                  style={{ ...styles.payOption, ...(packing === opt ? styles.payOptionActive : {}) }}
-                  onClick={() => setPacking(opt)}
-                >
-                  <div style={styles.radioOuter}>
-                    {packing === opt && <div style={styles.radioInner} />}
-                  </div>
-                  <span style={styles.payText}>{opt}</span>
-                </div>
-              ))}
-            </div>
-
             <input
               style={styles.notesInput}
               type="text"
@@ -378,7 +381,7 @@ function ReorderSheet({ order, credit, onClose }) {
               onClick={placeNow}
               disabled={!canPlace}
             >
-              {placing ? 'Placing Order…' : !packing ? 'Choose a packing type to continue' : `Place Order — ₹${totals.grandTotal}`}
+              {placing ? 'Placing Order…' : `Place Order — ₹${totals.grandTotal}`}
             </button>
             <button style={styles.editBtn} onClick={editInCheckout} disabled={placing || totals.count === 0}>
               Change address or add items
@@ -533,9 +536,12 @@ export default function Orders() {
               )}
 
               {order.items?.map((item, i) => (
-                <div key={i} style={styles.orderItem}>
-                  <span>{item.name} x{item.qty}</span>
-                  <span>₹{item.price * item.qty}</span>
+                <div key={i} style={{ marginBottom: '6px' }}>
+                  <div style={{ ...styles.orderItem, marginBottom: 0 }}>
+                    <span>{item.name} x{item.qty}</span>
+                    <span>₹{item.price * item.qty}</span>
+                  </div>
+                  {item.packing && <span style={styles.packBadge}>📦 {item.packing}</span>}
                 </div>
               ))}
 
@@ -646,6 +652,7 @@ const styles = {
   linePrice: { margin: 0, color: '#999', fontSize: '12px' },
   wasPrice: { color: '#B02D2F' },
   requiredTag: { color: '#B02D2F', textTransform: 'none', letterSpacing: 0, marginLeft: '6px' },
+  packSelect: { display: 'block', marginTop: '6px', width: '100%', maxWidth: '210px', padding: '6px 8px', fontSize: '12px', border: '1px solid #ddd', borderRadius: '8px', background: 'white', color: '#333', fontFamily: 'inherit' },
   packBadge: { display: 'inline-block', marginTop: '3px', fontSize: '11px', color: '#7A6100', background: '#FFF9E0', padding: '2px 8px', borderRadius: '10px' },
   lineOut: { margin: '4px 0 0', color: '#B02D2F', fontSize: '11px', fontWeight: 'bold' },
   lineRight: { display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px' },

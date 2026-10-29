@@ -1,6 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+// Packing types uncle offers. Packing is OPTIONAL and chosen per item in the Cart.
+// It is not offered for Makhana, Jawar/Jawari puff, Quinoa and Chikki products.
+// To change either list, edit it in Cart.js, Orders.js AND api/place-order.mjs.
+const PACKING_OPTIONS = ['Tray Packing', 'Silver Pouch Packing', 'HealthPlus Packing', 'Dabba Packing'];
+const NO_PACKING_CATEGORIES = ['makhana', 'jawar', 'jawari', 'quinoa', 'chikki'];
+const canChoosePacking = (item) =>
+  !NO_PACKING_CATEGORIES.includes(String((item && item.category) || '').trim().toLowerCase()) &&
+  !String((item && item.name) || '').toLowerCase().includes('makhana');
+
 function ItemImage({ item }) {
   const [failed, setFailed] = useState(false);
   if (!item.image || failed) {
@@ -24,6 +33,12 @@ export default function Cart() {
   const updateQty = (id, delta) => {
     let newCart = cart.map(c => c.id === id ? { ...c, qty: c.qty + delta } : c)
       .filter(c => c.qty > 0);
+    setCart(newCart);
+    localStorage.setItem('mdCart', JSON.stringify(newCart));
+  };
+
+  const updatePacking = (id, packing) => {
+    const newCart = cart.map(c => c.id === id ? { ...c, packing } : c);
     setCart(newCart);
     localStorage.setItem('mdCart', JSON.stringify(newCart));
   };
@@ -60,6 +75,18 @@ export default function Cart() {
                   <p style={styles.itemName}>{item.name}</p>
                   <p style={styles.itemPrice}>₹{item.price}/{item.unit}</p>
                   {item.gst === 0 && <span style={styles.gstFree}>GST Free</span>}
+                  {canChoosePacking(item) && (
+                    <select
+                      style={styles.packSelect}
+                      value={item.packing || ''}
+                      onChange={e => updatePacking(item.id, e.target.value)}
+                    >
+                      <option value="">📦 Packing: none (optional)</option>
+                      {PACKING_OPTIONS.map(opt => (
+                        <option key={opt} value={opt}>{opt}</option>
+                      ))}
+                    </select>
+                  )}
                 </div>
                 <div style={styles.qtyControl}>
                   <button style={styles.qtyBtn} onClick={() => updateQty(item.id, -1)}>−</button>
@@ -121,6 +148,7 @@ const styles = {
   itemName: { margin: '0 0 4px', fontWeight: 'bold', fontSize: '14px' },
   itemPrice: { margin: 0, color: '#999', fontSize: '12px' },
   gstFree: { fontSize: '10px', color: '#2e7d32', background: '#e8f5e9', padding: '2px 6px', borderRadius: '8px' },
+  packSelect: { display: 'block', marginTop: '8px', width: '100%', maxWidth: '210px', padding: '7px 8px', fontSize: '12px', border: '1px solid #ddd', borderRadius: '8px', background: 'white', color: '#333', fontFamily: 'inherit' },
   qtyControl: { display: 'flex', alignItems: 'center', gap: '12px' },
   qtyBtn: { width: '30px', height: '30px', borderRadius: '50%', border: 'none', background: '#B02D2F', color: 'white', fontSize: '18px', cursor: 'pointer' },
   qty: { fontWeight: 'bold', fontSize: '16px', minWidth: '20px', textAlign: 'center' },

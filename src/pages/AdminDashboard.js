@@ -458,6 +458,9 @@ export default function AdminDashboard() {
                   {order.packing && (
                     <p style={styles.packFlag}>📦 Packing: {order.packing}</p>
                   )}
+                  {order.items?.some(i => i.packing) && (
+                    <p style={styles.packFlag}>📦 Special packing requested</p>
+                  )}
 
                   {order.delivery && (
                     <div style={styles.addressBox}>
@@ -475,9 +478,12 @@ export default function AdminDashboard() {
                   )}
 
                   {order.items?.map((item, i) => (
-                    <div key={i} style={styles.orderItem}>
-                      <span>{item.name} x{item.qty}</span>
-                      <span>₹{item.price * item.qty}</span>
+                    <div key={i} style={{ marginBottom: '6px' }}>
+                      <div style={{ ...styles.orderItem, marginBottom: 0 }}>
+                        <span>{item.name} x{item.qty}</span>
+                        <span>₹{item.price * item.qty}</span>
+                      </div>
+                      {item.packing && <span style={styles.packBadge}>📦 {item.packing}</span>}
                     </div>
                   ))}
 
@@ -785,6 +791,7 @@ const styles = {
   orderPhoneSub: { display: 'block', fontSize: '12px', color: '#999' },
   orderStatus: { padding: '4px 10px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold', height: 'fit-content', whiteSpace: 'nowrap' },
   orderDate: { color: '#999', fontSize: '12px', marginBottom: '10px' },
+  packBadge: { display: 'inline-block', marginTop: '3px', fontSize: '11px', color: '#7A6100', background: '#FFF9E0', padding: '2px 8px', borderRadius: '10px' },
   packFlag: { display: 'inline-block', margin: '0 0 10px', fontSize: '12px', fontWeight: 'bold', color: '#7A6100', background: '#FFF9E0', border: '1px solid #F0DE8C', padding: '4px 10px', borderRadius: '10px' },
   addressBox: { background: '#fafafa', borderRadius: '8px', padding: '10px', marginBottom: '10px' },
   addressText: { margin: '0 0 3px', fontSize: '12px', color: '#666', lineHeight: '1.45' },
